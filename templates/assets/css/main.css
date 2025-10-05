@@ -1,0 +1,174 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --font-weight-200: 200;
+  --font-weight-300: 300;
+  --font-weight-400: 400;
+  --font-weight-500: 500;
+  --font-weight-600: 600;
+  --font-weight-700: 700;
+  --font-weight-800: 800;
+
+  --text-display-2xl: 56px;
+  --text-display-2xl-line-height: 60px;
+  --text-display-xl: 48px;
+  --text-display-xl-line-height: 56px;
+  --text-display-lg: 42px;
+  --text-display-lg-line-height: 52px;
+  --text-display-md: 36px;
+  --text-display-md-line-height: 44px;
+  --text-display-sm: 32px;
+  --text-display-sm-line-height: 40px;
+  --text-3xl: 28px;
+  --text-3xl-line-height: 42px;
+  --text-2xl: 24px;
+  --text-2xl-line-height: 32px;
+  --text-xl: 21px;
+  --text-xl-line-height: 32px;
+  --text-lg: 18px;
+  --text-lg-line-height: 24px;
+  --text-md: 16px;
+  --text-md-line-height: 24px;
+  --text-sm: 14px;
+  --text-sm-line-height: 18px;
+  --text-xs: 12px;
+  --text-xs-line-height: 16px;
+  --text-button-lg: 16px;
+  --text-button-lg-line-height: 24px;
+  --text-button-md: 14px;
+  --text-button-md-line-height: 24px;
+  --text-button-sm: 12px;
+  --text-button-sm-line-height: 24px;
+
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-13: 52px;
+  --spacing-14: 56px;
+  --spacing-15: 60px;
+  --spacing-16: 64px;
+  --spacing-auto: auto;
+
+  --radius-none: 0px;
+  --radius-0: 0px;
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+  --radius-4: 16px;
+  --radius-5: 20px;
+  --radius-6: 24px;
+  --radius-7: 28px;
+  --radius-8: 32px;
+  --radius-9: 36px;
+  --radius-10: 40px;
+  --radius-11: 44px;
+  --radius-12: 48px;
+  --radius-13: 52px;
+  --radius-14: 56px;
+  --radius-15: 60px;
+  --radius-16: 64px;
+  --radius-full: 9999px;
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #0a0908;
+
+  --color-gray-100: #fafafa;
+  --color-gray-200: #f5f5f5;
+  --color-gray-300: #e5e5e5;
+  --color-gray-400: #d6d6d6;
+  --color-gray-500: #a3a3a3;
+  --color-gray-600: #737373;
+  --color-gray-700: #434343;
+  --color-gray-800: #2a2a2a;
+  --color-gray-900: #212529;
+  --color-gray-1000: #0f0f0f;
+
+  --color-error-100: #fff0f3;
+  --color-error-200: #ffccd5;
+  --color-error-300: #ffb3c1;
+  --color-error-400: #ff8fa3;
+  --color-error-500: #ff758f;
+  --color-error-600: #ff4d6d;
+  --color-error-700: #c9184a;
+  --color-error-800: #a4133c;
+  --color-error-900: #800f2f;
+  --color-error-1000: #590d22;
+
+  --transition-property-spacing: margin, padding;
+}
+
+@layer base {
+  body {
+    @apply font-sans;
+  }
+
+  footer {
+    @apply mt-auto;
+  }
+
+  *:focus-visible {
+    @apply outline-2 outline-offset-1 outline-gray-300;
+  }
+
+  *::selection {
+    @apply bg-error-200 dark:bg-error-500/50;
+  }
+
+  .dark {
+    @apply bg-black text-gray-100;
+  }
+
+  .light {
+    @apply bg-gray-100 text-black;
+  }
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    @apply h-2 w-2 bg-transparent;
+  }
+  .scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-300 dark:bg-gray-900;
+  }
+
+  .scrollbar::-webkit-scrollbar-corner {
+    @apply bg-transparent;
+  }
+
+  .slider::-webkit-slider-thumb {
+    @apply relative z-10 h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-solid border-black bg-gray-100 dark:border-gray-100 dark:bg-black;
+  }
+
+  .slider:disabled::-webkit-slider-thumb {
+    @apply cursor-default border-gray-500 dark:border-gray-500;
+  }
+
+  .disable-transitions * {
+    transition: none !important;
+  }
+}
+
+@utility container {
+  @apply mx-auto px-4;
+}

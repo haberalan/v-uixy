@@ -1,0 +1,10 @@
+dist
+node_modules
+logs
+*.log
+.DS_Store
+.fleet
+.idea
+.env
+.env.*
+!.env.example

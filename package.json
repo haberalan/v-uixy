@@ -1,0 +1,48 @@
+{
+  "name": "v-uixy",
+  "version": "1.0.0",
+  "private": false,
+  "author": {
+    "name": "Alan Haber",
+    "email": "contact@alanhaber.me"
+  },
+  "type": "module",
+  "description": "Add UI components to your project.",
+  "bin": {
+    "v-uixy": "bin/v-uixy.js"
+  },
+  "keywords": [
+    "cli",
+    "ui",
+    "components",
+    "scaffold",
+    "generator",
+    "nuxt",
+    "vue",
+    "typescript",
+    "v-motion",
+    "tailwindcss"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin/",
+    "commands/**/*.js",
+    "configs/**/*.json",
+    "templates/**",
+    "README.md"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haberalan/v-uixy.git"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "execa": "^9.5.3",
+    "fs-extra": "^11.3.0",
+    "inquirer": "^12.6.3"
+  }
+}

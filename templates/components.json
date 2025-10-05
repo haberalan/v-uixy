@@ -1,0 +1,202 @@
+{
+  "components": [
+    {
+      "name": "Accordion",
+      "related-components": ["Icon"],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Alert",
+      "related-components": ["Button", "Icon", "Card"],
+      "packages": ["motion-v", "uuid"],
+      "composables": []
+    },
+    {
+      "name": "Avatar",
+      "related-components": ["Skeleton"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Badge",
+      "related-components": ["Link, Icon"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Button",
+      "related-components": ["Link, Loader, Icon"],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Calendar",
+      "related-components": ["IconButton"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Card",
+      "related-components": ["Link"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Checkbox",
+      "related-components": ["Icon"],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Command",
+      "related-components": ["Modal", "Card", "Link", "Icon", "Separator"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Icon",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "IconButton",
+      "related-components": ["Link", "Loader", "Icon"],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Input",
+      "related-components": ["Icon"],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "InputOTP",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Link",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Loader",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Modal",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Popover",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": ["usePosition"]
+    },
+    {
+      "name": "Radio",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Scale",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Select",
+      "related-components": ["Badge", "Icon", "Input"],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Separator",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Sheet",
+      "related-components": ["Scale"],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Skeleton",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Slider",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Switch",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "TableOfContents",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Tabs",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Textarea",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Theme",
+      "related-components": [],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "TimePicker",
+      "related-components": ["Icon"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Toast",
+      "related-components": ["Card"],
+      "packages": ["uuid", "motion-v"],
+      "composables": []
+    },
+    {
+      "name": "Toggle",
+      "related-components": ["Icon"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Tooltip",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": ["usePosition"]
+    }
+  ]
+}
