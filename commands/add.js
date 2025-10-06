@@ -97,7 +97,6 @@ async function updateIndex(newComponents) {
   const existing = await getExistingIndexComponents();
   const existingSet = new Set(existing);
 
-  // Preserve existing order; append new components in the order provided
   const merged = [...existing];
   for (const name of newComponents) {
     if (!existingSet.has(name)) {
