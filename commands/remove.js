@@ -2,10 +2,11 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import inquirer from "inquirer";
+import { fileURLToPath } from "url";
 
 const projectRoot = process.cwd();
 const templatesRoot = path.resolve(
-  path.dirname(new URL(import.meta.url).pathname),
+  path.dirname(fileURLToPath(import.meta.url)),
   "../templates"
 );
 const componentsDir = path.join(projectRoot, "components/ui");

@@ -11,7 +11,7 @@ const program = new Command();
 program
   .name("v-uixy")
   .description("A UI components CLI for Nuxt + Tailwind")
-  .version("0.1.0");
+  .version("1.1.0");
 
 program.command("add <component>").description("Add a component").action(add);
 
