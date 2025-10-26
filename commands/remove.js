@@ -9,7 +9,7 @@ const templatesRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../templates"
 );
-const componentsDir = path.join(projectRoot, "components/ui");
+const componentsDir = path.join(projectRoot, "app/components/ui");
 const componentIndexPath = path.join(componentsDir, "index.ts");
 
 async function loadRegistry() {
@@ -34,8 +34,15 @@ async function removeIndexExport(name) {
     .filter((l) => l.trim() !== line)
     .join("\n");
 
-  await fs.writeFile(componentIndexPath, newContent);
-  console.log(`🧹 Removed export from index.ts for "${name}"`);
+  if (newContent !== content) {
+    await fs.writeFile(componentIndexPath, newContent);
+    console.log(
+      `🧹 Removed export from ${path.relative(
+        projectRoot,
+        componentIndexPath
+      )} for "${name}"`
+    );
+  }
 }
 
 async function removeComponent(name) {
@@ -60,11 +67,11 @@ async function removeComponent(name) {
 
   await fs.remove(pathToRemove);
   await removeIndexExport(name);
-  console.log(chalk.green(`🗑️  Removed component "${name}"`));
+  console.log(
+    chalk.green(`🗑️  Removed component "${name}" from app/components/ui`)
+  );
 }
 
 export default async function remove(componentName) {
-  const registry = await loadRegistry();
-
   await removeComponent(componentName);
 }

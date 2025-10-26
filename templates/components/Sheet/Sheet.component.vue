@@ -1,31 +1,33 @@
 <template>
-  <teleport to="body">
-    <animate-presence>
-      <template v-if="open">
-        <motion.div
-          :initial="{ opacity: 0 }"
-          :animate="{ opacity: 1 }"
-          :exit="{ opacity: 0 }"
-          :transition="{ ease: 'easeInOut', duration: 0.15 }"
-          @click.self="handleClick"
-          class="fixed left-0 top-0 z-20 size-full bg-white/5 backdrop-blur-[2px] dark:bg-gray-900/5"
-        />
-        <motion.div
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          :variants="ANIMATIONS[props.direction ?? 'right']"
-          :transition="{ ease: 'easeInOut', duration: 0.3 }"
-          :class="
+  <client-only>
+    <teleport to="body">
+      <animate-presence>
+        <template v-if="open">
+          <motion.div
+            :initial="{ opacity: 0 }"
+            :animate="{ opacity: 1 }"
+            :exit="{ opacity: 0 }"
+            :transition="{ ease: 'easeInOut', duration: 0.15 }"
+            @click.self="handleClick"
+            class="fixed left-0 top-0 z-20 size-full bg-white/5 backdrop-blur-[2px] dark:bg-gray-900/5"
+          />
+          <motion.div
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            :variants="ANIMATIONS[props.direction ?? 'right']"
+            :transition="{ ease: 'easeInOut', duration: 0.3 }"
+            :class="
             sheetStyles({ direction: props.direction ?? 'right' }, $attrs.class as string)
           "
-          v-bind="filteredAttrs"
-        >
-          <slot />
-        </motion.div>
-      </template>
-    </animate-presence>
-  </teleport>
+            v-bind="filteredAttrs"
+          >
+            <slot />
+          </motion.div>
+        </template>
+      </animate-presence>
+    </teleport>
+  </client-only>
 </template>
 
 <script setup lang="ts">

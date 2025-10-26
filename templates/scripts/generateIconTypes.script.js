@@ -5,8 +5,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const svgDir = path.join(__dirname, "../assets/icons");
-const outputFile = path.join(__dirname, "../types/icons.ts");
+const svgDir = path.join(__dirname, "../app/assets/icons");
+const outputFile = path.join(__dirname, "../app/types/icons.ts");
 
 function formatKey(name) {
   return name

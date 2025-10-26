@@ -1,16 +1,28 @@
 import svgLoader from "vite-svg-loader";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname, resolve } from "path";
 
-const currentDir = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2025-04-24",
+  modules: ["motion-v/nuxt"],
+  compatibilityDate: "2025-10-15",
   devtools: { enabled: true },
-  css: [join(currentDir, "./assets/css/main.css")],
+  css: ["~/assets/css/main.css"],
   vite: {
     plugins: [svgLoader(), tailwindcss()],
+    resolve: {
+      alias: {
+        "~/utils": resolve(__dirname, "app/utils"),
+        "@/utils": resolve(__dirname, "app/utils"),
+        "~/assets": resolve(__dirname, "app/assets"),
+        "@/assets": resolve(__dirname, "app/assets"),
+        "~/types": resolve(__dirname, "app/types"),
+        "@/types": resolve(__dirname, "app/types"),
+      },
+    },
   },
 });

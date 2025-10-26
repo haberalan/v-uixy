@@ -4,11 +4,11 @@ import chalk from "chalk";
 import { fileURLToPath } from "url";
 
 const projectRoot = process.cwd();
-const componentsDir = path.join(projectRoot, "components/ui");
 const templatesRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../templates"
 );
+const componentsDir = path.join(projectRoot, "app/components/ui");
 
 async function loadRegistry() {
   const registryPath = path.join(templatesRoot, "components.json");
@@ -28,8 +28,7 @@ async function listComponents() {
   const results = [];
 
   for (const { name } of registry) {
-    const componentPath = path.join(componentsDir, name);
-    const isInstalled = await fs.pathExists(componentPath);
+    const isInstalled = await fs.pathExists(path.join(componentsDir, name));
 
     results.push({
       name,

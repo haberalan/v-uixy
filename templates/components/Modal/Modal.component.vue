@@ -1,28 +1,30 @@
 <template>
-  <teleport to="body">
-    <animate-presence>
-      <motion.div
-        v-if="open"
-        :initial="{ opacity: 0 }"
-        :animate="{ opacity: 1 }"
-        :exit="{ opacity: 0 }"
-        :transition="{ duration: 0.15, ease: 'easeInOut' }"
-        :class="modalStyles($attrs.class as string)"
-        data-modal
-        @click.self="handleClick"
-        @keydown{esc}="handleClick"
-      >
+  <client-only>
+    <teleport to="body">
+      <animate-presence>
         <motion.div
-          :initial="{ scale: 0.8 }"
-          :animate="{ scale: 1 }"
-          :exit="{ scale: 0.8 }"
+          v-if="open"
+          :initial="{ opacity: 0 }"
+          :animate="{ opacity: 1 }"
+          :exit="{ opacity: 0 }"
           :transition="{ duration: 0.15, ease: 'easeInOut' }"
+          :class="modalStyles($attrs.class as string)"
+          data-modal
+          @click.self="handleClick"
+          @keydown{esc}="handleClick"
         >
-          <slot />
+          <motion.div
+            :initial="{ scale: 0.8 }"
+            :animate="{ scale: 1 }"
+            :exit="{ scale: 0.8 }"
+            :transition="{ duration: 0.15, ease: 'easeInOut' }"
+          >
+            <slot />
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </animate-presence>
-  </teleport>
+      </animate-presence>
+    </teleport>
+  </client-only>
 </template>
 
 <script setup lang="ts">
@@ -43,10 +45,14 @@
   };
 
   const toggleSiblingsInert = (enable?: boolean) => {
-    Array.from(document.body.children).forEach((el) => {
-      if (el === document.querySelector("[data-modal]")) return;
+    if (typeof document === "undefined") return;
 
-      if (el.hasAttribute("data-modal")) return;
+    const modalEl = document.querySelector(
+      "[data-modal]"
+    ) as HTMLElement | null;
+
+    Array.from(document.body.children).forEach((el) => {
+      if (modalEl && (el === modalEl || el.contains(modalEl))) return;
 
       if (enable) {
         el.setAttribute("inert", "");

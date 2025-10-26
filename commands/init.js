@@ -13,19 +13,22 @@ const root = process.cwd();
 const templateRoot = path.resolve(__dirname, "../templates");
 
 const filesToCopy = [
-  "components.json",
-  "scripts/generateIconTypes.script.js",
-  "assets/css/main.css",
-  "tailwind.config.ts",
-  "nuxt.config.ts",
-  "tsconfig.json",
-  "types/styles.d.ts",
-  "types/icons.ts",
-  "utils/styles.ts",
-  "utils/twMerge.ts",
+  { src: "components.json", dest: "components.json" },
+  {
+    src: "scripts/generateIconTypes.script.js",
+    dest: "scripts/generateIconTypes.script.js",
+  },
+  { src: "assets/css/main.css", dest: "app/assets/css/main.css" },
+  { src: "tailwind.config.ts", dest: "tailwind.config.ts" },
+  { src: "nuxt.config.ts", dest: "nuxt.config.ts" },
+  { src: "tsconfig.json", dest: "tsconfig.json" },
+  { src: "types/styles.d.ts", dest: "types/styles.d.ts" },
+  { src: "types/icons.ts", dest: "app/types/icons.ts" },
+  { src: "utils/styles.ts", dest: "app/utils/styles.ts" },
+  { src: "utils/twMerge.ts", dest: "app/utils/twMerge.ts" },
 ];
 
-const dirsToCopy = ["assets/icons"];
+const dirsToCopy = [{ src: "assets/icons", dest: "app/assets/icons" }];
 
 async function installPackages() {
   const packages = [
@@ -35,6 +38,7 @@ async function installPackages() {
     "vite-svg-loader",
     "tailwind-merge",
     "@tailwindcss/vite",
+    "typescript",
   ];
 
   console.log(chalk.blue("\n📦 Installing dependencies..."));
@@ -50,9 +54,9 @@ async function installPackages() {
 export default async function init(options = {}) {
   console.log(chalk.cyan("🧩 Initializing v-uixy..."));
 
-  for (const relPath of filesToCopy) {
-    const src = path.join(templateRoot, relPath);
-    const dest = path.join(root, relPath);
+  for (const { src: srcRel, dest: destRel } of filesToCopy) {
+    const src = path.join(templateRoot, srcRel);
+    const dest = path.join(root, destRel);
 
     const exists = await fs.pathExists(dest);
     if (exists) {
@@ -60,7 +64,7 @@ export default async function init(options = {}) {
         {
           type: "confirm",
           name: "overwrite",
-          message: `${chalk.yellow(relPath)} already exists. Overwrite?`,
+          message: `${chalk.yellow(destRel)} already exists. Overwrite?`,
           default: false,
         },
       ]);
@@ -73,12 +77,12 @@ export default async function init(options = {}) {
 
     await fs.ensureDir(path.dirname(dest));
     await fs.copy(src, dest);
-    console.log(chalk.green(`✔ Created ${relPath}`));
+    console.log(chalk.green(`✔ Created ${destRel}`));
   }
 
-  for (const relPath of dirsToCopy) {
-    const src = path.join(templateRoot, relPath);
-    const dest = path.join(root, relPath);
+  for (const { src: srcRel, dest: destRel } of dirsToCopy) {
+    const src = path.join(templateRoot, srcRel);
+    const dest = path.join(root, destRel);
 
     const exists = await fs.pathExists(dest);
     if (exists) {
@@ -87,7 +91,7 @@ export default async function init(options = {}) {
           type: "confirm",
           name: "overwrite",
           message: `${chalk.yellow(
-            relPath
+            destRel
           )} already exists. Overwrite entire directory?`,
           default: false,
         },
@@ -102,7 +106,7 @@ export default async function init(options = {}) {
     }
 
     await fs.copy(src, dest);
-    console.log(chalk.green(`✔ Copied directory ${relPath}`));
+    console.log(chalk.green(`✔ Copied directory ${destRel}`));
   }
 
   if (!options.withoutPackages) {

@@ -10,11 +10,19 @@ const templatesRoot = path.resolve(
   "../templates"
 );
 
-const componentsDir = path.join(projectRoot, "components/ui");
-const composablesDir = path.join(projectRoot, "composables");
-const componentIndexPath = path.join(componentsDir, "index.ts");
-const composablesIndexPath = path.join(composablesDir, "index.ts");
 const registryPath = path.join(templatesRoot, "components.json");
+
+async function getProjectPaths() {
+  const componentsDir = path.join(projectRoot, "app/components/ui");
+  const composablesDir = path.join(projectRoot, "app/composables");
+
+  return {
+    componentsDir,
+    composablesDir,
+    componentIndexPath: path.join(componentsDir, "index.ts"),
+    composablesIndexPath: path.join(composablesDir, "index.ts"),
+  };
+}
 
 async function loadRegistry() {
   const exists = await fs.pathExists(registryPath);
@@ -52,19 +60,21 @@ async function resolveDeps(name, registry, resolved = new Set()) {
 
 async function copyComponent(name) {
   const src = path.join(templatesRoot, `components/${name}`);
+  const { componentsDir } = await getProjectPaths();
   const dest = path.join(componentsDir, name);
 
   if (!(await fs.pathExists(src))) {
     console.log(chalk.yellow(`⚠️  No template found for component "${name}"`));
     return;
   }
-
+  await fs.ensureDir(componentsDir);
   await fs.copy(src, dest, { overwrite: true });
-  console.log(chalk.green(`✔ Copied ${name} to components/ui/${name}`));
+  console.log(chalk.green(`✔ Copied ${name} to app/components/ui/${name}`));
 }
 
 async function copyComposable(name) {
   const src = path.join(templatesRoot, `composables/${name}.ts`);
+  const { composablesDir } = await getProjectPaths();
   const dest = path.join(composablesDir, `${name}.ts`);
 
   if (!(await fs.pathExists(src))) {
@@ -80,6 +90,7 @@ async function copyComposable(name) {
 }
 
 async function getExistingIndexComponents() {
+  const { componentIndexPath } = await getProjectPaths();
   if (!(await fs.pathExists(componentIndexPath))) return [];
 
   const content = await fs.readFile(componentIndexPath, "utf8");
@@ -92,6 +103,8 @@ async function getExistingIndexComponents() {
 }
 
 async function updateIndex(newComponents) {
+  const { componentIndexPath, componentsDir } = await getProjectPaths();
+  await fs.ensureDir(componentsDir);
   await fs.ensureFile(componentIndexPath);
 
   const existing = await getExistingIndexComponents();
@@ -107,18 +120,20 @@ async function updateIndex(newComponents) {
 
   const lines = merged.map((name) => `export * from "./${name}";`);
   await fs.writeFile(componentIndexPath, lines.join("\n") + "\n");
-  console.log(chalk.green(`🔗 Updated components/ui/index.ts`));
+  console.log(chalk.green(`🔗 Updated app/components/ui/index.ts`));
 }
 
 async function updateComposablesIndex(name) {
+  const { composablesIndexPath, composablesDir } = await getProjectPaths();
   const line = `export * from "./${name}";`;
+  await fs.ensureDir(composablesDir);
   await fs.ensureFile(composablesIndexPath);
   const content = await fs.readFile(composablesIndexPath, "utf8");
   const lines = content.split("\n").map((line) => line.trim());
 
   if (!lines.includes(line)) {
     await fs.appendFile(composablesIndexPath, line + "\n");
-    console.log(`🔗 Linked composable "${name}" in composables/index.ts`);
+    console.log(`🔗 Linked composable "${name}" in app/composables/index.ts`);
   } else {
     console.log(`ℹ️  Composable "${name}" already linked`);
   }
@@ -162,9 +177,47 @@ async function installPackages(componentNames, registry) {
   }
 }
 
+async function ensureTypeScriptInstalled() {
+  const packageJsonPath = path.join(projectRoot, "package.json");
+  if (!(await fs.pathExists(packageJsonPath))) return;
+
+  const packageJson = await fs.readJson(packageJsonPath);
+  const hasTS = Boolean(
+    packageJson.dependencies?.typescript ||
+      packageJson.devDependencies?.typescript
+  );
+  if (hasTS) return;
+
+  console.log(chalk.blue("📦 Installing dev dependency: typescript"));
+  try {
+    await execa("npm", ["install", "-D", "typescript"], { stdio: "inherit" });
+    console.log(chalk.green("✔ Installed typescript"));
+  } catch (err) {
+    console.error(chalk.red("✖ Failed to install typescript"));
+  }
+}
+
+async function ensureTsconfig() {
+  const tsconfigDest = path.join(projectRoot, "tsconfig.json");
+  if (await fs.pathExists(tsconfigDest)) return;
+
+  const tsconfigSrc = path.join(templatesRoot, "tsconfig.json");
+  if (!(await fs.pathExists(tsconfigSrc))) return;
+
+  try {
+    await fs.copy(tsconfigSrc, tsconfigDest);
+    console.log(chalk.green("✔ Added tsconfig.json"));
+  } catch (err) {
+    console.error(chalk.red("✖ Failed to add tsconfig.json"));
+  }
+}
+
 export default async function add(componentName) {
   const registry = await loadRegistry();
   let componentsToAdd = new Set();
+
+  await ensureTypeScriptInstalled();
+  await ensureTsconfig();
 
   if (componentName.toLowerCase() === "all") {
     componentsToAdd = new Set(registry.map((c) => c.name));
