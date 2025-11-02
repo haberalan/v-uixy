@@ -97,6 +97,12 @@
       "composables": []
     },
     {
+      "name": "PieChart",
+      "related-components": [],
+      "packages": ["motion-v"],
+      "composables": []
+    },
+    {
       "name": "Popover",
       "related-components": [],
       "packages": ["motion-v"],
