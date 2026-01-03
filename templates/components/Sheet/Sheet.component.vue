@@ -79,4 +79,10 @@
       setScale(1);
     }
   );
+
+  onUnmounted(async () => {
+    await nextTick();
+
+    setScale(1);
+  });
 </script>

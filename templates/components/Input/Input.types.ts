@@ -11,7 +11,6 @@ export interface UixyInputProps {
   helperText?: string;
   errorText?: string;
   autoFocus?: boolean;
-  hideHelper?: boolean;
 }
 
 export interface UixyInputEmits {

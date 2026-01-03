@@ -26,6 +26,5 @@ export type UixySelectProps = {
   helperText?: string;
   errorText?: string;
   autoFocus?: boolean;
-  hideHelper?: boolean;
   max?: number;
 } & (UixyMultipleSelectProps | UixySingleSelectProps);

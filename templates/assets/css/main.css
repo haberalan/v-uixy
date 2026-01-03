@@ -164,6 +164,10 @@
     @apply cursor-default border-gray-500 dark:border-gray-500;
   }
 
+  .slider-color-picker::-webkit-slider-thumb {
+    @apply relative z-10 size-4.5 cursor-pointer appearance-none rounded-full border-2 border-solid border-gray-900 bg-gray-100;
+  }
+
   .disable-transitions * {
     transition: none !important;
   }

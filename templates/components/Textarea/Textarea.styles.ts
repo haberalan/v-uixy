@@ -21,7 +21,7 @@ export const textareaStyles = styles(
 );
 
 export const labelStyles = styles(
-  "transition-colors ease-in-out duration-150 text-sm font-500",
+  "transition-colors ease-in-out duration-150 text-xs font-500",
   {
     status: {
       default: "",

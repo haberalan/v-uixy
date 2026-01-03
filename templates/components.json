@@ -49,6 +49,12 @@
       "composables": []
     },
     {
+      "name": "ColorPicker",
+      "related-components": ["Card"],
+      "packages": [],
+      "composables": []
+    },
+    {
       "name": "Command",
       "related-components": ["Modal", "Card", "Link", "Icon", "Separator"],
       "packages": [],
@@ -70,7 +76,7 @@
       "name": "Input",
       "related-components": ["Icon"],
       "packages": ["motion-v"],
-      "composables": []
+      "composables": ["useInputValidation"]
     },
     {
       "name": "InputOTP",
@@ -124,7 +130,7 @@
       "name": "Select",
       "related-components": ["Badge", "Icon", "Input"],
       "packages": ["motion-v"],
-      "composables": []
+      "composables": ["useInputValidation"]
     },
     {
       "name": "Separator",

@@ -52,7 +52,6 @@
               icon="search"
               iconPositon="right"
               placeholder="Search..."
-              hide-helper
               auto-focus
             />
           </div>
@@ -90,19 +89,29 @@
         {{ props.label }}
       </div>
     </div>
-    <div v-if="!props.hideHelper" class="h-4">
-      <animate-presence mode="wait" :initial="false">
-        <motion.div
-          :initial="{ opacity: 0, y: '-4px' }"
-          :animate="{ opacity: 1, y: 0 }"
-          :exit="{ opacity: 0, y: '-4px' }"
-          :transition="{ duration: 0.125 }"
-          :key="status"
-        >
-          <p :class="helperStyles({ status })">{{ text }}</p>
-        </motion.div>
-      </animate-presence>
-    </div>
+    <animate-presence mode="wait" :initial="false">
+      <motion.div
+        v-if="!!text"
+        class="overflow-hidden"
+        :initial="{ height: 0 }"
+        :animate="{ height: 'auto' }"
+        :exit="{ height: 0 }"
+        :transition="{ duration: 0.1, ease: 'easeInOut' }"
+      >
+        <animate-presence mode="wait" :initial="false">
+          <motion.p
+            :key="status + text"
+            :class="helperStyles({ status })"
+            :initial="{ opacity: 0, y: -4 }"
+            :animate="{ opacity: 1, y: 0 }"
+            :exit="{ opacity: 0, y: 4 }"
+            :transition="{ duration: 0.12, ease: 'easeInOut', delay: 0.1 }"
+          >
+            {{ text }}
+          </motion.p>
+        </animate-presence>
+      </motion.div>
+    </animate-presence>
   </div>
 </template>
 
