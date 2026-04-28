@@ -2,12 +2,12 @@
   <div class="flex flex-col gap-1">
     <div class="relative flex flex-col-reverse gap-1">
       <input
+        ref="inputRef"
         v-model="model"
         :type="props.type ?? 'text'"
         :id
         :disabled="props.disabled"
         :placeholder="props.placeholder"
-        :auto-focus="props.autoFocus"
         :class="inputStyles({ status, icon }, $attrs.class as string)"
         v-bind="filteredAttrs"
       />
@@ -27,29 +27,19 @@
         {{ props.label }}
       </label>
     </div>
-    <animate-presence mode="wait" :initial="false">
-      <motion.div
-        v-if="!!text"
-        class="overflow-hidden"
-        :initial="{ height: 0 }"
-        :animate="{ height: 'auto' }"
-        :exit="{ height: 0 }"
-        :transition="{ duration: 0.1, ease: 'easeInOut' }"
-      >
-        <animate-presence mode="wait" :initial="false">
-          <motion.p
-            :key="status + text"
-            :class="helperStyles({ status })"
-            :initial="{ opacity: 0, y: -4 }"
-            :animate="{ opacity: 1, y: 0 }"
-            :exit="{ opacity: 0, y: 4 }"
-            :transition="{ duration: 0.12, ease: 'easeInOut', delay: 0.1 }"
-          >
-            {{ text }}
-          </motion.p>
-        </animate-presence>
-      </motion.div>
-    </animate-presence>
+    <div v-if="!props.hideHelper" class="h-4">
+      <animate-presence mode="wait" :initial="false">
+        <motion.div
+          :initial="{ opacity: 0, y: '-4px' }"
+          :animate="{ opacity: 1, y: 0 }"
+          :exit="{ opacity: 0, y: '-4px' }"
+          :transition="{ duration: 0.125 }"
+          :key="status"
+        >
+          <p :class="helperStyles({ status })">{{ text }}</p>
+        </motion.div>
+      </animate-presence>
+    </div>
   </div>
 </template>
 
@@ -80,6 +70,8 @@
     return rest;
   });
 
+  const inputRef = ref<HTMLInputElement>();
+
   const model = defineModel<string>();
 
   const instance = getCurrentInstance();
@@ -89,7 +81,7 @@
   const hasIconClickEmit = computed(() => !!instance?.vnode.props?.onIconClick);
 
   const status = computed(() =>
-    props.disabled ? "disabled" : props.status ?? "default"
+    props.disabled ? "disabled" : (props.status ?? "default"),
   );
 
   const text = computed(
@@ -99,10 +91,18 @@
         default: props.helperText,
         disabled: "",
         valid: "",
-      }[props.status ?? "default"])
+      })[props.status ?? "default"],
   );
 
   const icon = computed(() =>
-    props.icon ? props.iconPositon ?? "right" : "none"
+    props.icon ? (props.iconPositon ?? "right") : "none",
   );
+
+  onMounted(() => {
+    if (props.autoFocus) {
+      nextTick(() => inputRef.value?.focus({ preventScroll: true }));
+    }
+  });
+
+  defineExpose({ focus: () => inputRef.value?.focus({ preventScroll: true }) });
 </script>

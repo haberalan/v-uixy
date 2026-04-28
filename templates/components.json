@@ -111,7 +111,7 @@
     {
       "name": "Popover",
       "related-components": [],
-      "packages": ["motion-v"],
+      "packages": ["motion-v", "uuid"],
       "composables": ["usePosition"]
     },
     {

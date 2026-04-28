@@ -11,7 +11,6 @@
           :class="modalStyles($attrs.class as string)"
           data-modal
           @click.self="handleClick"
-          @keydown{esc}="handleClick"
         >
           <motion.div
             :initial="{ scale: 0.8 }"
@@ -32,7 +31,7 @@
   import { modalStyles } from "./Modal.styles";
   import { AnimatePresence, motion } from "motion-v";
 
-  defineProps<UixyModalProps>();
+  const props = defineProps<UixyModalProps>();
 
   defineOptions({
     inheritAttrs: false,
@@ -41,14 +40,30 @@
   const open = defineModel<boolean>();
 
   const handleClick = () => {
+    if (props.persistent) return;
+
     open.value = false;
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      handleClick();
+      return;
+    }
+    if (e.key === "Enter") {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "TEXTAREA" || target.tagName === "BUTTON") return;
+      const modalEl = document.querySelector("[data-modal]");
+      const form = modalEl?.querySelector("form");
+      form?.requestSubmit();
+    }
   };
 
   const toggleSiblingsInert = (enable?: boolean) => {
     if (typeof document === "undefined") return;
 
     const modalEl = document.querySelector(
-      "[data-modal]"
+      "[data-modal]",
     ) as HTMLElement | null;
 
     Array.from(document.body.children).forEach((el) => {
@@ -68,7 +83,16 @@
     open,
     (isOpen) => {
       toggleSiblingsInert(isOpen);
+      if (isOpen) {
+        window.addEventListener("keydown", handleKeyDown);
+      } else {
+        window.removeEventListener("keydown", handleKeyDown);
+      }
     },
-    { immediate: true }
+    { immediate: true },
   );
+
+  onUnmounted(() => {
+    window.removeEventListener("keydown", handleKeyDown);
+  });
 </script>

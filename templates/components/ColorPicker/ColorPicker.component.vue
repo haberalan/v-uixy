@@ -2,7 +2,7 @@
   <uixy-card class="p-2 flex flex-col gap-4">
     <div
       ref="svRef"
-      class="relative cursor-crosshair overflow-hidden rounded-1 w-64 h-48"
+      class="relative cursor-crosshair overflow-hidden rounded-1 min-w-64 h-48"
       :style="svBackgroundStyle"
       @mousedown="onSvMouseDown"
       @touchstart.prevent="onSvTouchStart"
@@ -69,11 +69,11 @@
 
   const rgbToHex8 = (r: number, g: number, b: number, a: number) =>
     `#${componentToHex(r)}${componentToHex(g)}${componentToHex(
-      b
+      b,
     )}${componentToHex(clamp(a, 0, 255))}`;
 
   const hexToRgbA = (
-    hex?: string
+    hex?: string,
   ): {
     r: number;
     g: number;
@@ -162,7 +162,7 @@
   const svRef = ref<HTMLElement | null>(null);
 
   const rgb = computed(() =>
-    hsvToRgb(hue.value, sat.value / 100, val.value / 100)
+    hsvToRgb(hue.value, sat.value / 100, val.value / 100),
   );
 
   const updatingFromModel = ref(false);

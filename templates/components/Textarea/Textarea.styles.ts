@@ -17,11 +17,11 @@ export const textareaStyles = styles(
       true: "resize-none",
       false: "",
     },
-  }
+  },
 );
 
 export const labelStyles = styles(
-  "transition-colors ease-in-out duration-150 text-xs font-500",
+  "transition-colors ease-in-out duration-150 text-sm font-500",
   {
     status: {
       default: "",
@@ -29,7 +29,7 @@ export const labelStyles = styles(
       disabled: "text-gray-500 dark:text-gray-700",
       valid: "",
     },
-  }
+  },
 );
 
 export const helperStyles = styles(
@@ -46,5 +46,5 @@ export const helperStyles = styles(
       right: "text-right",
       center: "text-center",
     },
-  }
+  },
 );

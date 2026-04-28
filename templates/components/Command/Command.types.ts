@@ -16,4 +16,5 @@ export interface UixyCommandProps {
   options: UixyCommandItems[];
   placeholder?: string;
   emptyText?: string;
+  persistent?: boolean;
 }

@@ -39,12 +39,27 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
     const tooltipRect = refElement.value.getBoundingClientRect();
     const targetRect = target.value.getBoundingClientRect();
     const winW = window.innerWidth;
+    const winH = window.innerHeight;
 
     let top: number;
     const scrollY = hasFixedParent(target.value) ? 0 : window.scrollY;
 
-    top =
+    const spaceBelow = winH - targetRect.bottom;
+    const spaceAbove = targetRect.top;
+    const fitsBelow = spaceBelow >= tooltipRect.height + 6;
+    const fitsAbove = spaceAbove >= tooltipRect.height + 6;
+
+    const effectiveDirection =
       direction === "top"
+        ? fitsAbove || !fitsBelow
+          ? "top"
+          : "bottom"
+        : fitsBelow || !fitsAbove
+          ? "bottom"
+          : "top";
+
+    top =
+      effectiveDirection === "top"
         ? targetRect.top - tooltipRect.height - 6 + scrollY
         : targetRect.bottom + 6 + scrollY;
 
@@ -80,7 +95,7 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
         window.removeEventListener("resize", updatePosition);
       }
     },
-    { flush: "post" }
+    { flush: "post" },
   );
 
   onBeforeUnmount(() => {

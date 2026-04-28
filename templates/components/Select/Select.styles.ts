@@ -13,7 +13,7 @@ export const selectStyles = styles(
       valid:
         "bg-white dark:bg-gray-1000 focus-visible:border-gray-500 dark:focus-visible:border-gray-600 cursor-pointer",
     },
-  }
+  },
 );
 
 export const iconStyles = styles(
@@ -23,11 +23,11 @@ export const iconStyles = styles(
       true: "rotate-180",
       false: "",
     },
-  }
+  },
 );
 
 export const labelStyles = styles(
-  "transition-colors ease-in-out duration-150 text-xs font-500",
+  "transition-colors ease-in-out duration-150 text-sm font-500",
   {
     status: {
       default: "",
@@ -36,7 +36,7 @@ export const labelStyles = styles(
         "text-gray-500 dark:text-gray-700 pointer-events-none select-none",
       valid: "",
     },
-  }
+  },
 );
 
 export const itemStyles = styles(
@@ -50,7 +50,7 @@ export const itemStyles = styles(
       true: "pointer-events-none text-gray-500 dark:text-gray-700",
       false: "",
     },
-  }
+  },
 );
 
 export const helperStyles = styles(
@@ -63,7 +63,7 @@ export const helperStyles = styles(
         "text-gray-400 dark:text-gray-800 pointer-events-none select-none",
       valid: "text-gray-600",
     },
-  }
+  },
 );
 
 export const badgesWrapperStyles = styles("flex flex-wrap gap-1", {

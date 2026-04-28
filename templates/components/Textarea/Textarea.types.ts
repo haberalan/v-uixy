@@ -10,4 +10,5 @@ export interface UixyTextareaProps {
   noResize?: boolean;
   rows?: number;
   maxLength?: number;
+  hideHelper?: boolean;
 }

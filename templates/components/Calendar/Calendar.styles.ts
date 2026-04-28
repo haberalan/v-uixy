@@ -1,7 +1,7 @@
 import styles from "~/utils/styles";
 
 export const calendarStyles = styles(
-  "flex w-fit flex-col items-center rounded-2 border border-gray-300 bg-gray-100 p-3 shadow-xs dark:border-gray-900 dark:bg-black"
+  "flex w-fit flex-col items-center rounded-2 border border-gray-300 bg-gray-100 p-3 shadow-xs dark:border-gray-900 dark:bg-black",
 );
 
 export const calendarDayStyles = styles(
@@ -9,7 +9,7 @@ export const calendarDayStyles = styles(
   {
     currentMonth: {
       true: "dark:text-gray-300",
-      false: "text-gray-500 dark:text-gray-600",
+      false: "text-gray-400 dark:text-gray-600",
     },
     selected: {
       true: "bg-black text-white hover:bg-black dark:bg-white dark:!text-black dark:hover:bg-white",
@@ -19,5 +19,13 @@ export const calendarDayStyles = styles(
       true: "cursor-default pointer-events-none",
       false: "cursor-pointer",
     },
-  }
+    greyedOut: {
+      true: "opacity-35 cursor-not-allowed pointer-events-none",
+      false: "",
+    },
+    today: {
+      true: "ring-1 ring-gray-400 dark:ring-gray-600",
+      false: "",
+    },
+  },
 );

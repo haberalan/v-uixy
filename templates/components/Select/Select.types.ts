@@ -1,6 +1,8 @@
 export interface UixySelectOptionType {
   label: string;
+  value?: string;
   disabled?: boolean;
+  children?: UixySelectOptionType[];
 }
 
 export interface UixyMultipleSelectProps {
@@ -13,6 +15,7 @@ export interface UixySingleSelectProps {
 
 export interface UixySelectEmits {
   (event: "change", v: string): void;
+  (event: "openChange", isOpen: boolean): void;
 }
 
 export type UixySelectProps = {
@@ -27,4 +30,13 @@ export type UixySelectProps = {
   errorText?: string;
   autoFocus?: boolean;
   max?: number;
+  tree?: boolean;
+  leafOnly?: boolean;
+  autoOpen?: boolean;
+  delay?: number;
+  hideHelper?: boolean;
+  deselectable?: boolean;
+  allowCustom?: boolean;
+  clearSearchOnSelect?: boolean;
+  followOnScroll?: boolean;
 } & (UixyMultipleSelectProps | UixySingleSelectProps);

@@ -9,44 +9,35 @@
         :auto-focus="props.autoFocus"
         :rows="props.rows ?? 3"
         :max-length="props.maxLength"
-        :class="textareaStyles(
-              { status, noResize: !!props.noResize },
-              $attrs.class as string,
-            )"
+        :class="
+          textareaStyles(
+            { status, noResize: !!props.noResize },
+            $attrs.class as string,
+          )
+        "
         v-bind="filteredAttrs"
       />
       <label v-if="props.label" :for="id" :class="labelStyles({ status })">
         {{ props.label }}
       </label>
     </div>
-    <animate-presence mode="wait" :initial="false">
-      <motion.div
-        v-if="!!text"
-        class="overflow-hidden"
-        :initial="{ height: 0 }"
-        :animate="{ height: 'auto' }"
-        :exit="{ height: 0 }"
-        :transition="{ duration: 0.1, ease: 'easeInOut' }"
-      >
-        <animate-presence mode="wait" :initial="false">
-          <motion.p
-            :key="status + text"
-            :class="
-              helperStyles({
-                status,
-                align: props.alignText ?? 'left',
-              })
-            "
-            :initial="{ opacity: 0, y: -4 }"
-            :animate="{ opacity: 1, y: 0 }"
-            :exit="{ opacity: 0, y: 4 }"
-            :transition="{ duration: 0.12, ease: 'easeInOut', delay: 0.1 }"
+    <div v-if="!props.hideHelper" class="h-4">
+      <animate-presence mode="wait" :initial="false">
+        <motion.div
+          :initial="{ opacity: 0, y: '-4px' }"
+          :animate="{ opacity: 1, y: 0 }"
+          :exit="{ opacity: 0, y: '-4px' }"
+          :transition="{ duration: 0.125 }"
+          :key="status"
+        >
+          <p
+            :class="helperStyles({ status, align: props.alignText ?? 'left' })"
           >
             {{ text }}
-          </motion.p>
-        </animate-presence>
-      </motion.div>
-    </animate-presence>
+          </p>
+        </motion.div>
+      </animate-presence>
+    </div>
   </div>
 </template>
 
@@ -74,7 +65,7 @@
   const id = useId();
 
   const status = computed(() =>
-    props.disabled ? "disabled" : props.status ?? "default"
+    props.disabled ? "disabled" : (props.status ?? "default"),
   );
 
   const text = computed(
@@ -84,6 +75,6 @@
         default: props.helperText,
         disabled: "",
         valid: "",
-      }[props.status ?? "default"])
+      })[props.status ?? "default"],
   );
 </script>

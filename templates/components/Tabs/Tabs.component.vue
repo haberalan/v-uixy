@@ -23,7 +23,16 @@
     </div>
     <slot name="nav-extra" />
     <div>
-      <animate-presence mode="wait" :initial="false">
+      <template v-if="props.keepAlive">
+        <div
+          v-for="tab in props.tabs"
+          :key="tab.value"
+          v-show="active === tab.value"
+        >
+          <slot :name="tab.value" />
+        </div>
+      </template>
+      <animate-presence v-else mode="wait" :initial="false">
         <motion.div
           :key="active"
           :initial="{ opacity: 0, y: 4 }"
@@ -55,6 +64,6 @@
   const layoutId = computed(() => `uixy-tabs-${uuidv4()}`);
 
   onBeforeMount(() => {
-    if (props.tabs.length > 0) active.value = props.tabs[0].value;
+    if (props.tabs.length > 0) active.value = props.tabs[0]?.value;
   });
 </script>

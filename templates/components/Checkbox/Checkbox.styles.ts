@@ -13,7 +13,7 @@ export const iconStyles = styles("h-3 w-3", {
   },
 });
 
-export const labelStyles = styles("text-xs", {
+export const labelStyles = styles("text-sm", {
   disabled: {
     true: "text-gray-500 dark:text-gray-600",
     false: "",

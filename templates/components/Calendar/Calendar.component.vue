@@ -7,7 +7,7 @@
         size="sm"
         variant="tertiary"
       />
-      <p class="w-[160px] text-center text-sm font-500">
+      <p class="w-40 text-center text-sm font-500">
         {{ MONTHS[selectedMonth] }} {{ selectedYear }}
       </p>
       <uixy-icon-button
@@ -22,7 +22,7 @@
       class="grid w-full grid-cols-7 text-xs text-gray-400 dark:text-gray-700"
     >
       <div v-for="day in adjustedDays" :key="day" class="py-2 text-center">
-        {{ day.slice(0, 2) }}
+        {{ day?.slice(0, 2) }}
       </div>
     </div>
 
@@ -36,9 +36,18 @@
             selected: model?.toDateString?.() === day.date.toDateString(),
             disabled:
               !!props.disabled || day.fromPreviousMonth || day.fromNextMonth,
+            greyedOut:
+              !!day.fromCurrentMonth &&
+              !!props.isDateDisabled &&
+              props.isDateDisabled(day.date),
+            today: today.toDateString() === day.date.toDateString(),
           })
         "
-        :disabled="day.fromPreviousMonth || day.fromNextMonth"
+        :disabled="
+          day.fromPreviousMonth ||
+          day.fromNextMonth ||
+          (!!props.isDateDisabled && props.isDateDisabled(day.date))
+        "
         @click="handleDayClick(day.date)"
       >
         {{ day.day }}
@@ -82,11 +91,13 @@
     "Saturday",
   ];
 
+  const today = new Date();
+
   const selectedYear = ref(props.year ?? new Date().getFullYear());
   const selectedMonth = ref(props.month ?? new Date().getMonth());
 
   const adjustedDays = computed(() =>
-    props.startOfWeek === "Monday" ? [...DAYS.slice(1), DAYS[0]] : DAYS
+    props.startOfWeek === "Monday" ? [...DAYS.slice(1), DAYS[0]] : DAYS,
   );
 
   const getDaysInMonth = (year: number, month: number) =>
@@ -101,11 +112,11 @@
   });
 
   const daysInCurrentMonth = computed(() =>
-    getDaysInMonth(selectedYear.value, selectedMonth.value)
+    getDaysInMonth(selectedYear.value, selectedMonth.value),
   );
 
   const daysInPreviousMonth = computed(() =>
-    getDaysInMonth(selectedYear.value, selectedMonth.value - 1)
+    getDaysInMonth(selectedYear.value, selectedMonth.value - 1),
   );
 
   const prevMonthDaysToShow = computed(() =>
@@ -114,11 +125,11 @@
       date: new Date(
         selectedYear.value,
         selectedMonth.value - 1,
-        daysInPreviousMonth.value - i
+        daysInPreviousMonth.value - i,
       ),
       dayOfWeek: (firstDayOfMonth.value - 1 - i + 7) % 7,
       fromPreviousMonth: true,
-    })).reverse()
+    })).reverse(),
   );
 
   const currentMonthDaysToShow = computed(() =>
@@ -128,18 +139,18 @@
       dayOfWeek: new Date(
         selectedYear.value,
         selectedMonth.value,
-        i + 1
+        i + 1,
       ).getDay(),
       fromCurrentMonth: true,
-    }))
+    })),
   );
 
   const lastDayOfMonth = computed(() =>
     new Date(
       selectedYear.value,
       selectedMonth.value,
-      daysInCurrentMonth.value
-    ).getDay()
+      daysInCurrentMonth.value,
+    ).getDay(),
   );
 
   const nextMonthDaysToShow = computed(() => {
@@ -190,8 +201,8 @@
   }
 
   function handleDayClick(date: Date) {
-    if (!props.disabled) {
-      model.value = date;
-    }
+    if (props.disabled) return;
+    if (props.isDateDisabled?.(date)) return;
+    model.value = date;
   }
 </script>

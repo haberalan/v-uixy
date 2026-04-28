@@ -1,5 +1,5 @@
 <template>
-  <uixy-modal v-model="open">
+  <uixy-modal v-model="open" :persistent="props.persistent">
     <uixy-card :class="commandStyles($attrs.class as string)">
       <div class="flex items-center gap-2 p-3">
         <label :for="id">
@@ -22,7 +22,7 @@
         />
       </div>
       <uixy-separator variant="horizontal" />
-      <div class="scrollbar max-h-[320px] overflow-y-auto">
+      <div class="scrollbar max-h-80 overflow-y-auto">
         <template v-for="option in filteredOptions" :key="option.label">
           <template v-if="option.items.length > 0">
             <ul class="flex flex-col gap-2 p-2">
@@ -79,13 +79,13 @@
     props.options.map((option) => ({
       label: option.label,
       items: option.items.filter((item) =>
-        item.label.toLowerCase().includes(input.value?.toLowerCase() ?? "")
+        item.label.toLowerCase().includes(input.value?.toLowerCase() ?? ""),
       ),
-    }))
+    })),
   );
 
   const isEmpty = computed(() =>
-    filteredOptions.value.every((option) => option.items.length === 0)
+    filteredOptions.value.every((option) => option.items.length === 0),
   );
 
   const handleClose = () => {
@@ -93,7 +93,7 @@
   };
 
   const placeholder = computed(
-    () => props.placeholder || "Search or type a command..."
+    () => props.placeholder || "Search or type a command...",
   );
 
   const emptyText = computed(() => props.emptyText || "No results found.");

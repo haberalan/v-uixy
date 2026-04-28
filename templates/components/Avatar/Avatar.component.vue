@@ -47,7 +47,11 @@
     show.value = false;
   };
 
-  onMounted(() => {
-    show.value = !!props.src;
-  });
+  watch(
+    () => props.src,
+    (src) => {
+      show.value = !!src;
+    },
+    { immediate: true },
+  );
 </script>

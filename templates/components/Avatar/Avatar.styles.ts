@@ -8,11 +8,11 @@ export const avatarWrapperStyles = styles(
       squared: "rounded-2",
       default: "",
     },
-  }
+  },
 );
 
 export const avatarImageStyles = styles(
-  "flex aspect-square items-center overflow-hidden text-center text-[0]",
+  "flex aspect-square object-cover items-center overflow-hidden text-center text-[0]",
   {
     show: {
       true: "",
@@ -23,5 +23,5 @@ export const avatarImageStyles = styles(
       squared: "rounded-2",
       default: "",
     },
-  }
+  },
 );

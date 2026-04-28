@@ -17,7 +17,7 @@ export const inputStyles = styles(
       right: "pr-8",
       none: "",
     },
-  }
+  },
 );
 
 export const iconStyles = styles(
@@ -41,11 +41,11 @@ export const iconStyles = styles(
       true: "pointer-events-auto cursor-pointer",
       false: "",
     },
-  }
+  },
 );
 
 export const labelStyles = styles(
-  "transition-colors ease-in-out duration-150 text-xs font-500",
+  "transition-colors ease-in-out duration-150 text-sm font-500",
   {
     status: {
       default: "",
@@ -53,7 +53,7 @@ export const labelStyles = styles(
       disabled: "text-gray-500 dark:text-gray-700",
       valid: "",
     },
-  }
+  },
 );
 
 export const helperStyles = styles(
@@ -65,5 +65,5 @@ export const helperStyles = styles(
       disabled: "text-gray-400 dark:text-gray-800",
       valid: "text-gray-600",
     },
-  }
+  },
 );

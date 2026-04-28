@@ -5,6 +5,7 @@
         :class="selectStyles({ status }, $attrs.class as string)"
         :tabIndex="props.disabled ? -1 : 0"
         :auto-focus="props.autoFocus"
+        ref="refTrigger"
         @click="handleOpen"
         @keydown="handleKeydownSelect"
         v-bind="filteredAttrs"
@@ -20,7 +21,7 @@
           :class="badgesWrapperStyles({ disabled: props.disabled })"
         >
           <uixy-badge
-            v-for="(item, index) in model"
+            v-for="(item, index) in model as string[]"
             data-badge
             variant="tertiary"
             size="xs"
@@ -28,94 +29,135 @@
             :key="`${item}--${index}`"
             @click.stop="handleClickSelectedOption(item)"
           >
-            {{ item }}
+            {{ getLabel(item) }}
           </uixy-badge>
         </div>
-        <p v-else>{{ model }}</p>
+        <p v-else>{{ getLabel(model as string) }}</p>
 
+        <uixy-icon
+          v-if="props.deselectable && !props.multiple && model"
+          name="close"
+          class="absolute right-7 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer z-10 text-gray-500 dark:text-gray-600 hover:text-black dark:hover:text-gray-400"
+          @click.stop="handleDeselect"
+        />
         <uixy-icon name="chevron-down" :class="iconStyles({ open })" />
       </div>
-      <animate-presence>
-        <motion.div
-          v-if="open && !props.disabled"
-          class="scrollbar absolute top-full z-20 mt-[2px] max-h-[320px] w-full overflow-y-auto rounded-1 border border-gray-300 bg-white p-1 text-sm dark:border-gray-900 dark:bg-gray-1000"
-          :initial="{ opacity: 0, y: -4, scale: 0.8 }"
-          :animate="{ opacity: 1, y: 0, scale: 1 }"
-          :exit="{ opacity: 0, scale: 0.8 }"
-          :transition="{ duration: 0.15, ease: 'easeInOut' }"
-          select-dropdown
-        >
-          <div v-if="props.search" class="mb-2">
-            <uixy-input
-              v-model="search"
-              status="default"
-              icon="search"
-              iconPositon="right"
-              placeholder="Search..."
-              auto-focus
-            />
-          </div>
-          <ul class="flex flex-col gap-1 py-1">
-            <li
-              v-for="option in filteredOptions"
-              :tabIndex="option.disabled ? -1 : 0"
-              :key="option.label"
-              :class="
-                itemStyles({
-                  selected: isSelected(option),
-                  disabled: !!option.disabled,
-                })
-              "
-              @keydown="handleKeydownOption($event, option)"
-              @click="handleClick(option.label)"
-            >
-              {{ option.label }}
-              <uixy-icon
-                v-if="isSelected(option)"
-                name="check"
-                class="absolute right-2 top-2 size-4"
-              />
-            </li>
-            <li
-              v-if="filteredOptions.length === 0"
-              class="px-3 text-center dark:text-gray-600"
-            >
-              No results found
-            </li>
-          </ul>
-        </motion.div>
-      </animate-presence>
+
+      <teleport to="body">
+        <animate-presence>
+          <motion.div
+            v-if="open && !props.disabled"
+            class="scrollbar z-50 max-h-60 overflow-y-auto rounded-1 border border-gray-300 bg-white p-1 text-sm shadow-sm dark:border-gray-900 dark:bg-gray-1000"
+            :style="dropdownStyles"
+            :initial="{ opacity: 0, y: -4, scale: 0.98 }"
+            :animate="{ opacity: 1, y: 0, scale: 1 }"
+            :exit="{ opacity: 0, scale: 0.98 }"
+            :transition="{ duration: 0.12, ease: 'easeInOut' }"
+          >
+            <div ref="refDropdownEl" select-dropdown>
+              <div v-if="props.search" class="mb-2" @click.stop>
+                <uixy-input
+                  ref="refSearchInput"
+                  v-model="search"
+                  status="default"
+                  icon="search"
+                  iconPositon="right"
+                  placeholder="Search..."
+                  hide-helper
+                />
+              </div>
+
+              <ul v-if="props.tree" class="flex flex-col gap-1 py-1">
+                <template
+                  v-for="option in filteredOptions"
+                  :key="option.value ?? option.label"
+                >
+                  <SelectTreeItem
+                    :option="option"
+                    :depth="0"
+                    :is-selected="isSelected"
+                    :is-partially-selected="isPartiallySelected"
+                    :expanded-items="effectiveExpandedItems"
+                    :leaf-only="props.leafOnly"
+                    :multiple="props.multiple"
+                    :search-term="search"
+                    :original-options="props.options"
+                    @toggle-expand="toggleExpand"
+                    @select="handleClick"
+                  />
+                </template>
+
+                <li
+                  v-if="filteredOptions.length === 0"
+                  class="px-3 text-center dark:text-gray-600"
+                >
+                  No results found
+                </li>
+              </ul>
+
+              <ul v-else class="flex flex-col gap-1 py-1">
+                <li
+                  v-for="option in filteredOptions"
+                  :tabIndex="option.disabled ? -1 : 0"
+                  :key="option.value ?? option.label"
+                  :class="
+                    itemStyles({
+                      selected: isSelected(option),
+                      disabled: !!option.disabled,
+                    })
+                  "
+                  @keydown="handleKeydownOption($event, option)"
+                  @click="handleClick(option.value ?? option.label)"
+                >
+                  {{ option.label }}
+                  <uixy-icon
+                    v-if="isSelected(option)"
+                    name="check"
+                    class="absolute right-2 top-2 size-4"
+                  />
+                </li>
+
+                <li
+                  v-if="customAddVisible"
+                  class="relative py-2 px-3 rounded-1 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-500 dark:text-gray-600"
+                  @click="handleCustomAdd"
+                >
+                  Add: "{{ search }}"
+                </li>
+
+                <li
+                  v-if="filteredOptions.length === 0 && !customAddVisible"
+                  class="px-3 text-center dark:text-gray-600"
+                >
+                  No results found
+                </li>
+              </ul>
+            </div>
+          </motion.div>
+        </animate-presence>
+      </teleport>
       <div v-if="props.label" :class="labelStyles({ status })">
         {{ props.label }}
       </div>
     </div>
-    <animate-presence mode="wait" :initial="false">
-      <motion.div
-        v-if="!!text"
-        class="overflow-hidden"
-        :initial="{ height: 0 }"
-        :animate="{ height: 'auto' }"
-        :exit="{ height: 0 }"
-        :transition="{ duration: 0.1, ease: 'easeInOut' }"
-      >
-        <animate-presence mode="wait" :initial="false">
-          <motion.p
-            :key="status + text"
-            :class="helperStyles({ status })"
-            :initial="{ opacity: 0, y: -4 }"
-            :animate="{ opacity: 1, y: 0 }"
-            :exit="{ opacity: 0, y: 4 }"
-            :transition="{ duration: 0.12, ease: 'easeInOut', delay: 0.1 }"
-          >
-            {{ text }}
-          </motion.p>
-        </animate-presence>
-      </motion.div>
-    </animate-presence>
+    <div v-if="!props.hideHelper" class="h-4">
+      <animate-presence mode="wait" :initial="false">
+        <motion.div
+          :initial="{ opacity: 0, y: '-4px' }"
+          :animate="{ opacity: 1, y: 0 }"
+          :exit="{ opacity: 0, y: '-4px' }"
+          :transition="{ duration: 0.125 }"
+          :key="status"
+        >
+          <p :class="helperStyles({ status })">{{ text }}</p>
+        </motion.div>
+      </animate-presence>
+    </div>
   </div>
 </template>
 
-<script setup lang="ts" generic="T extends (string | string[])">
+<script setup lang="ts" generic="T extends string | string[]">
+  import { nextTick, onWatcherCleanup, onMounted } from "vue";
   import {
     selectStyles,
     iconStyles,
@@ -124,16 +166,13 @@
     helperStyles,
     badgesWrapperStyles,
   } from "./Select.styles";
-  import type {
-    UixySelectEmits,
-    UixySelectOptionType,
-    UixySelectProps,
-  } from "./Select.types";
+  import type { UixySelectEmits, UixySelectProps } from "./Select.types";
   import { UixyBadge } from "../Badge";
   import { UixyIcon } from "../Icon";
   import { UixyInput } from "../Input";
   import { motion, AnimatePresence } from "motion-v";
   import { useSelect } from "./composables";
+  import SelectTreeItem from "./SelectTreeItem.vue";
 
   const props = defineProps<UixySelectProps>();
 
@@ -153,49 +192,155 @@
     return rest;
   });
 
-  const handleChange = (v: string) => {
-    if (props.multiple) {
-      let prevArray = model.value as string[];
+  const refTrigger = ref<HTMLElement>();
+  const refDropdownEl = ref<HTMLElement>();
+  const refSearchInput = ref<{ focus: () => void } | null>(null);
 
-      if (!Array.isArray(prevArray)) prevArray = [];
-
-      if (prevArray.includes(v)) {
-        (model.value as string[]) = prevArray.filter((item) => item !== v);
-      } else {
-        if (props.max && prevArray.length >= props.max)
-          (model.value as string[]) = [...prevArray.slice(1), v];
-
-        (model.value as string[]) = [...prevArray, v];
-      }
-    } else {
-      (model.value as string) = v;
-    }
-  };
+  const dropdownStyles = ref<Record<string, string>>({
+    position: "absolute",
+    top: "0px",
+    left: "0px",
+    width: "0px",
+  });
 
   const {
     refOptions,
     open,
     search,
     filteredOptions,
+    effectiveExpandedItems,
+    customAddVisible,
+    isSelected,
+    isPartiallySelected,
+    getLabel,
+    toggleExpand,
     handleOpen,
     handleKeydownSelect,
     handleKeydownOption,
     handleClickSelectedOption,
-  } = useSelect<T>(props.options, !!props.disabled, handleChange);
+    handleClick,
+    handleDeselect,
+    handleCustomAdd,
+  } = useSelect<T>(props, model as Ref<T>, emits, refDropdownEl);
 
-  const handleClick = (label: string) => {
-    handleChange(label);
+  const updateDropdownPosition = async () => {
+    if (!open.value || props.disabled) return;
 
-    if (!props.multiple) open.value = false;
+    await nextTick();
+    await new Promise<void>((r) => requestAnimationFrame(() => r()));
+
+    const trigger = refTrigger.value;
+    const dropdown = refDropdownEl.value;
+    if (!trigger || !dropdown) return;
+
+    const triggerRect = trigger.getBoundingClientRect();
+    const gap = 4;
+    const pad = 8;
+    const width = Math.max(80, triggerRect.width);
+
+    const scrollY = window.scrollY;
+    const scrollX = window.scrollX;
+
+    const cs = window.getComputedStyle(dropdown);
+    const maxH = Number.parseFloat(cs.maxHeight || "") || 240;
+    const desiredH = Math.min(dropdown.scrollHeight || 0, maxH);
+
+    const availableBelow = window.innerHeight - triggerRect.bottom - gap - pad;
+    const availableAbove = triggerRect.top - gap - pad;
+
+    const placeBelow =
+      desiredH <= availableBelow || availableBelow >= availableAbove;
+
+    let top =
+      (placeBelow
+        ? triggerRect.bottom + gap
+        : triggerRect.top - gap - desiredH) + scrollY;
+
+    const minTop = scrollY + pad;
+    const maxTop = scrollY + window.innerHeight - desiredH - pad;
+    top = Math.min(Math.max(minTop, top), Math.max(minTop, maxTop));
+
+    let left = triggerRect.left + scrollX;
+    const minLeft = scrollX + pad;
+    const maxLeft = scrollX + window.innerWidth - width - pad;
+    left = Math.min(Math.max(minLeft, left), Math.max(minLeft, maxLeft));
+
+    dropdownStyles.value = {
+      position: "absolute",
+      top: `${Math.round(top)}px`,
+      left: `${Math.round(left)}px`,
+      width: `${Math.round(width)}px`,
+    };
   };
 
-  const isSelected = (option: UixySelectOptionType) =>
-    Array.isArray(model.value)
-      ? model.value.includes(option.label)
-      : model.value === option.label;
+  const onResize = () => {
+    void updateDropdownPosition();
+  };
+
+  const onAnyScroll = () => {
+    void updateDropdownPosition();
+  };
+
+  watch(
+    () => open.value,
+    (isOpen) => {
+      emits("openChange", isOpen);
+
+      if (!isOpen) return;
+
+      void updateDropdownPosition();
+
+      if (props.search) {
+        nextTick(() => refSearchInput.value?.focus());
+      }
+
+      window.addEventListener("resize", onResize);
+      if (props.followOnScroll) {
+        window.addEventListener("scroll", onAnyScroll, true);
+      }
+
+      onWatcherCleanup(() => {
+        window.removeEventListener("resize", onResize);
+        window.removeEventListener("scroll", onAnyScroll, true);
+      });
+    },
+  );
+
+  onMounted(() => {
+    if (props.autoOpen && !props.disabled) {
+      const delayMs = (props.delay ?? 0) * 1000;
+      setTimeout(() => {
+        nextTick(() => {
+          open.value = true;
+        });
+      }, delayMs);
+    }
+  });
+
+  watch(search, () => {
+    if (!open.value) return;
+    void updateDropdownPosition();
+  });
+
+  watch(
+    () => filteredOptions.value.length,
+    () => {
+      if (!open.value) return;
+      void updateDropdownPosition();
+    },
+  );
+
+  watch(
+    () => model.value,
+    () => {
+      if (!open.value) return;
+      void updateDropdownPosition();
+    },
+    { deep: true },
+  );
 
   const status = computed(() =>
-    props.disabled ? "disabled" : props.status ?? "default"
+    props.disabled ? "disabled" : (props.status ?? "default"),
   );
 
   const text = computed(
@@ -205,6 +350,6 @@
         default: props.helperText,
         disabled: "",
         valid: "",
-      }[props.status ?? "default"])
+      })[props.status ?? "default"],
   );
 </script>

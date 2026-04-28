@@ -4,4 +4,5 @@ export interface UixyTabsProps {
     value: string | number;
   }[];
   variant: "primary" | "secondary";
+  keepAlive?: boolean;
 }

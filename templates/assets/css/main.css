@@ -156,6 +156,10 @@
     @apply bg-transparent;
   }
 
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .slider::-webkit-slider-thumb {
     @apply relative z-10 h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-solid border-black bg-gray-100 dark:border-gray-100 dark:bg-black;
   }

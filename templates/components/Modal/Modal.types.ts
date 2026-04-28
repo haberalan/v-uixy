@@ -1,1 +1,3 @@
-export interface UixyModalProps {}
+export interface UixyModalProps {
+  persistent?: boolean;
+}

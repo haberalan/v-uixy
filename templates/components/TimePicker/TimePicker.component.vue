@@ -62,29 +62,34 @@
 
   const validateAndFormatTime = (
     value: string,
-    type: "hour" | "minute" | "second"
-  ) => {
+    type: "hour" | "minute" | "second",
+  ): string => {
     const num = parseInt(value, 10);
     if (isNaN(num)) return "00";
-
-    let validatedNum = num;
-
-    if (type === "hour") validatedNum = Math.min(23, Math.max(0, num));
-    else if (type === "minute") validatedNum = Math.min(59, Math.max(0, num));
-    else validatedNum = Math.min(59, Math.max(0, num));
-
-    return validatedNum < 10 ? `0${validatedNum}` : `${validatedNum}`;
+    const max = type === "hour" ? 23 : 59;
+    const clamped = Math.max(0, Math.min(max, num));
+    return clamped < 10 ? `0${clamped}` : `${clamped}`;
   };
 
   const handleChange = (event: Event, type: "hour" | "minute" | "second") => {
     const target = event.target as HTMLInputElement;
-    const valueStr = validateAndFormatTime(target.value, type);
-    const valueNum = Number.parseInt(valueStr, 10);
+    const value = target.value.replace(/\D/g, "");
 
-    model.value = {
-      ...model.value,
-      [type]: Number.isFinite(valueNum) ? valueNum : 0,
-    };
+    if (value === "") return;
+
+    let num = parseInt(value, 10);
+
+    if (type === "hour") {
+      if (props.allowMidnight && num >= 24) {
+        num = 0;
+      } else if (num > 23) {
+        num = 23;
+      }
+    } else {
+      if (num > 59) num = 59;
+    }
+
+    model.value = { ...model.value, [type]: num };
   };
 
   const displaySeparator = (order: "first" | "second") => {
@@ -92,7 +97,6 @@
 
     if (order === "first") {
       if (!model.value?.hasOwnProperty("hour")) return false;
-
       if (
         model.value?.hasOwnProperty("minute") ||
         model.value?.hasOwnProperty("second")
@@ -102,7 +106,6 @@
 
     if (order === "second") {
       if (!model.value?.hasOwnProperty("second")) return false;
-
       if (
         model.value?.hasOwnProperty("hour") ||
         model.value?.hasOwnProperty("minute")
