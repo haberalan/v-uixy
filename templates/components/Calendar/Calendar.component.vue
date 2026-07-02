@@ -33,7 +33,10 @@
         :class="
           calendarDayStyles({
             currentMonth: !!day.fromCurrentMonth,
-            selected: model?.toDateString?.() === day.date.toDateString(),
+            selected: isRange
+              ? isEndpoint(day.date)
+              : model?.toDateString?.() === day.date.toDateString(),
+            inRange: isRange && isInRange(day.date),
             disabled:
               !!props.disabled || day.fromPreviousMonth || day.fromNextMonth,
             greyedOut:
@@ -49,6 +52,8 @@
           (!!props.isDateDisabled && props.isDateDisabled(day.date))
         "
         @click="handleDayClick(day.date)"
+        @mouseenter="emit('dayHover', day.date)"
+        @mouseleave="emit('dayLeave')"
       >
         {{ day.day }}
       </button>
@@ -60,11 +65,54 @@
   import { ref, computed } from "vue";
   import { UixyIconButton } from "../IconButton";
   import { calendarDayStyles, calendarStyles } from "./Calendar.styles";
-  import type { UixyCalendarProps } from "./Calendar.types";
+  import type { UixyCalendarProps, UixyCalendarEmits } from "./Calendar.types";
 
   const props = defineProps<UixyCalendarProps>();
 
+  const emit = defineEmits<UixyCalendarEmits>();
+
   const model = defineModel<Date | null>();
+
+  const isRange = computed(
+    () => props.rangeStart !== undefined || props.rangeEnd !== undefined,
+  );
+
+  const sameDay = (a?: Date | null, b?: Date | null) =>
+    !!a && !!b && a.toDateString() === b.toDateString();
+
+  const effectiveEnd = computed(
+    () => props.rangeEnd ?? props.rangeHover ?? null,
+  );
+
+  const isEndpoint = (date: Date) =>
+    sameDay(date, props.rangeStart) || sameDay(date, effectiveEnd.value);
+
+  const isInRange = (date: Date) => {
+    const start = props.rangeStart;
+    const end = effectiveEnd.value;
+
+    if (!start || !end) return false;
+
+    const d = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    ).getTime();
+
+    const a = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate(),
+    ).getTime();
+
+    const b = new Date(
+      end.getFullYear(),
+      end.getMonth(),
+      end.getDate(),
+    ).getTime();
+
+    return d > Math.min(a, b) && d < Math.max(a, b);
+  };
 
   const MONTHS = [
     "January",

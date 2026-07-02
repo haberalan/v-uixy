@@ -15,6 +15,10 @@ export const calendarDayStyles = styles(
       true: "bg-black text-white hover:bg-black dark:bg-white dark:!text-black dark:hover:bg-white",
       false: "hover:bg-gray-300 dark:hover:bg-gray-700",
     },
+    inRange: {
+      true: "bg-gray-300 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-800",
+      false: "",
+    },
     disabled: {
       true: "cursor-default pointer-events-none",
       false: "cursor-pointer",

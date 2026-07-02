@@ -36,13 +36,11 @@
 <script setup lang="ts">
   import { motion, useMotionValue, animate } from "motion-v";
   import { UixyButton, UixyIconButton, UixyIcon, UixyCard } from "..";
-  import type { UixyAlertItemProps } from "./Alert.types";
+  import type { UixyAlertItemProps, UixyAlertItemEmits } from "./Alert.types";
 
   const props = defineProps<UixyAlertItemProps>();
 
-  const emit = defineEmits<{
-    (event: "close-alert"): void;
-  }>();
+  const emit = defineEmits<UixyAlertItemEmits>();
 
   const width = useMotionValue("100%");
 

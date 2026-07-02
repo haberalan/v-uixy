@@ -25,6 +25,12 @@
       "composables": []
     },
     {
+      "name": "Breadcrumb",
+      "related-components": ["Link", "Icon"],
+      "packages": [],
+      "composables": []
+    },
+    {
       "name": "Button",
       "related-components": ["Link, Loader, Icon"],
       "packages": ["motion-v"],
@@ -39,6 +45,12 @@
     {
       "name": "Card",
       "related-components": ["Link"],
+      "packages": [],
+      "composables": []
+    },
+    {
+      "name": "Chart",
+      "related-components": [],
       "packages": [],
       "composables": []
     },
@@ -58,6 +70,24 @@
       "name": "Command",
       "related-components": ["Modal", "Card", "Link", "Icon", "Separator"],
       "packages": [],
+      "composables": []
+    },
+    {
+      "name": "DatePicker",
+      "related-components": ["Icon", "Button", "Calendar"],
+      "packages": ["motion-v"],
+      "composables": ["usePosition"]
+    },
+    {
+      "name": "DateRangePicker",
+      "related-components": ["Icon", "Button", "Calendar", "DatePicker"],
+      "packages": ["motion-v"],
+      "composables": ["usePosition"]
+    },
+    {
+      "name": "FileUpload",
+      "related-components": ["Icon", "Button", "IconButton"],
+      "packages": ["motion-v"],
       "composables": []
     },
     {
@@ -124,6 +154,12 @@
       "name": "Scale",
       "related-components": [],
       "packages": ["motion-v"],
+      "composables": []
+    },
+    {
+      "name": "SegmentedControl",
+      "related-components": ["Icon"],
+      "packages": ["motion-v", "uuid"],
       "composables": []
     },
     {

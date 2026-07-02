@@ -12,3 +12,7 @@ export interface UixyAlertItemProps {
   timer?: boolean;
   showClose?: boolean;
 }
+
+export interface UixyAlertItemEmits {
+  (event: "close-alert"): void;
+}

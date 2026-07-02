@@ -45,7 +45,9 @@
   import { inputOTPStyles } from "./InputOTP.styles";
   import type { UixyInputOTPProps } from "./InputOTP.types";
 
-  const props = defineProps<UixyInputOTPProps>();
+  const props = withDefaults(defineProps<UixyInputOTPProps>(), {
+    autoFocus: true,
+  });
 
   const INPUT_LENGTH = 6 as const;
   const PLACES = [
@@ -153,6 +155,6 @@
   });
 
   onMounted(() => {
-    inputRefs[0].value?.focus();
+    if (props.autoFocus) inputRefs[0].value?.focus();
   });
 </script>

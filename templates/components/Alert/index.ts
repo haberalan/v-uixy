@@ -1,6 +1,10 @@
 import UixyAlert from "./Alert.component.vue";
 import UixyAlertItem from "./AlertItem.component.vue";
-import { type UixyAlertProps, type UixyAlertItemProps } from "./Alert.types";
+import {
+  type UixyAlertProps,
+  type UixyAlertItemProps,
+  type UixyAlertItemEmits,
+} from "./Alert.types";
 
 export * from "./composables";
 export {
@@ -8,4 +12,5 @@ export {
   UixyAlertItem,
   type UixyAlertProps,
   type UixyAlertItemProps,
+  type UixyAlertItemEmits,
 };
