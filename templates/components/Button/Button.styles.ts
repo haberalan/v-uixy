@@ -1,7 +1,7 @@
 import styles from "~/utils/styles";
 
 export const buttonStyles = styles(
-  "relative cursor-pointer h-8 font-500 transition-all duration-200 ease-in-out hover:shadow-xs flex items-center justify-center gap-2 disabled:pointer-events-none border border-transparent",
+  "relative cursor-pointer font-500 transition-all duration-200 ease-in-out hover:shadow-xs flex items-center justify-center gap-2 disabled:pointer-events-none border border-transparent",
   {
     variant: {
       primary:
@@ -14,9 +14,9 @@ export const buttonStyles = styles(
         "dark:hover:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-800 disabled:text-gray-700",
     },
     size: {
-      sm: "px-5 py-1 text-button-sm",
-      md: "px-6 py-1 text-button-md",
-      lg: "px-7 py-1 text-button-lg",
+      sm: "h-7 px-4 text-button-sm",
+      md: "h-8 px-6 text-button-md",
+      lg: "h-10 px-8 text-button-lg",
     },
     rounded: {
       true: "rounded-full",

@@ -6,6 +6,8 @@ interface UsePositionOptions {
   direction?: Direction;
 }
 
+const GAP = 6;
+
 function hasFixedParent(el: HTMLElement | null): boolean {
   while (el) {
     const style = window.getComputedStyle(el);
@@ -46,8 +48,8 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
 
     const spaceBelow = winH - targetRect.bottom;
     const spaceAbove = targetRect.top;
-    const fitsBelow = spaceBelow >= tooltipRect.height + 6;
-    const fitsAbove = spaceAbove >= tooltipRect.height + 6;
+    const fitsBelow = spaceBelow >= tooltipRect.height + GAP;
+    const fitsAbove = spaceAbove >= tooltipRect.height + GAP;
 
     const effectiveDirection =
       direction === "top"
@@ -60,8 +62,8 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
 
     top =
       effectiveDirection === "top"
-        ? targetRect.top - tooltipRect.height - 6 + scrollY
-        : targetRect.bottom + 6 + scrollY;
+        ? targetRect.top - tooltipRect.height - GAP + scrollY
+        : targetRect.bottom + GAP + scrollY;
 
     let left = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2;
     const newStyles: Record<string, string | number> = {

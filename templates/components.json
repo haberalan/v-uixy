@@ -199,6 +199,12 @@
       "composables": []
     },
     {
+      "name": "Table",
+      "related-components": ["Card", "Checkbox", "Icon", "Skeleton", "Popover"],
+      "packages": [],
+      "composables": []
+    },
+    {
       "name": "TableOfContents",
       "related-components": [],
       "packages": [],
