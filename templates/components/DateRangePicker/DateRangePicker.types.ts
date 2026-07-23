@@ -18,6 +18,5 @@ export interface UixyDateRangePickerProps {
   startOfWeek?: "Sunday" | "Monday";
   isDateDisabled?: (date: Date) => boolean;
   direction?: "top" | "bottom";
-  hideHelper?: boolean;
   closeOnSelect?: boolean;
 }

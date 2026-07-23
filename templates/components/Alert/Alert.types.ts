@@ -15,4 +15,6 @@ export interface UixyAlertItemProps {
 
 export interface UixyAlertItemEmits {
   (event: "close-alert"): void;
+  (event: "pause-timer"): void;
+  (event: "resume-timer"): void;
 }

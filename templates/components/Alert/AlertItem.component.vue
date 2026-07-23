@@ -1,6 +1,8 @@
 <template>
   <uixy-card
     class="relative flex w-full items-center justify-between gap-8 overflow-hidden bg-gray-200 py-4 shadow-xs dark:bg-black"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
   >
     <div class="flex gap-4">
       <uixy-icon v-if="props.icon" :name="props.icon" class="size-6 shrink-0" />
@@ -34,7 +36,12 @@
 </template>
 
 <script setup lang="ts">
-  import { motion, useMotionValue, animate } from "motion-v";
+  import {
+    motion,
+    useMotionValue,
+    animate,
+    type AnimationPlaybackControls,
+  } from "motion-v";
   import { UixyButton, UixyIconButton, UixyIcon, UixyCard } from "..";
   import type { UixyAlertItemProps, UixyAlertItemEmits } from "./Alert.types";
 
@@ -44,10 +51,22 @@
 
   const width = useMotionValue("100%");
 
+  let controls: AnimationPlaybackControls | undefined;
+
   onMounted(() => {
-    animate(width, "0%", {
+    controls = animate(width, "0%", {
       duration: 8,
       ease: "linear",
     });
   });
+
+  const handleMouseEnter = () => {
+    controls?.pause();
+    emit("pause-timer");
+  };
+
+  const handleMouseLeave = () => {
+    controls?.play();
+    emit("resume-timer");
+  };
 </script>

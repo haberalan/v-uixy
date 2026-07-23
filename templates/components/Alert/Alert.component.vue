@@ -22,6 +22,8 @@
               v-bind="alert"
               :key="alert.id"
               @close-alert="close(alert.id)"
+              @pause-timer="pauseTimer(alert.id)"
+              @resume-timer="resumeTimer(alert.id)"
             />
           </motion.li>
         </animate-presence>
@@ -41,9 +43,25 @@
 
   const alerts = ref<UixyAlertItemProps[]>([]);
 
-  const timeouts = reactive<
-    { id: string; timeout: ReturnType<typeof setTimeout> }[]
-  >([]);
+  const ALERT_DURATION = 8000;
+
+  interface AlertTimeout {
+    id: string;
+    timeout: ReturnType<typeof setTimeout> | null;
+    remaining: number;
+    startedAt: number;
+  }
+
+  const timeouts = reactive<AlertTimeout[]>([]);
+
+  const startTimeout = (entry: AlertTimeout) => {
+    entry.startedAt = Date.now();
+    entry.timeout = setTimeout(() => {
+      alerts.value = alerts.value.filter((a) => a.id !== entry.id);
+      const index = timeouts.findIndex((t) => t.id === entry.id);
+      if (index !== -1) timeouts.splice(index, 1);
+    }, entry.remaining);
+  };
 
   const push = (alert: Omit<UixyAlertItemProps, "id">) => {
     const id = uuidv4();
@@ -56,25 +74,49 @@
       },
     ];
 
-    timeouts.push({
+    const entry: AlertTimeout = {
       id,
-      timeout: setTimeout(() => {
-        alerts.value = alerts.value.filter((a) => a.id !== id);
-      }, 8000),
-    });
+      timeout: null,
+      remaining: ALERT_DURATION,
+      startedAt: Date.now(),
+    };
+
+    timeouts.push(entry);
+    startTimeout(entry);
   };
 
   const close = (id: string) => {
     alerts.value = alerts.value.filter((alert) => {
       if (alert.id === id) {
-        const timeout = timeouts.find((t) => t.id === id);
-        if (timeout) {
-          clearTimeout(timeout.timeout);
+        const index = timeouts.findIndex((t) => t.id === id);
+        if (index !== -1) {
+          const timeout = timeouts[index];
+          if (timeout.timeout) clearTimeout(timeout.timeout);
+          timeouts.splice(index, 1);
         }
         return false;
       }
       return true;
     });
+  };
+
+  const pauseTimer = (id: string) => {
+    const entry = timeouts.find((t) => t.id === id);
+    if (!entry || !entry.timeout) return;
+
+    clearTimeout(entry.timeout);
+    entry.timeout = null;
+    entry.remaining = Math.max(
+      entry.remaining - (Date.now() - entry.startedAt),
+      0,
+    );
+  };
+
+  const resumeTimer = (id: string) => {
+    const entry = timeouts.find((t) => t.id === id);
+    if (!entry || entry.timeout) return;
+
+    startTimeout(entry);
   };
 
   provide("push-alert", push);

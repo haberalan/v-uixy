@@ -33,9 +33,29 @@
       />
     </div>
 
-    <div v-if="!props.hideHelper && helperText" class="h-4">
-      <p :class="helperStyles({ status })">{{ helperText }}</p>
-    </div>
+    <animate-presence mode="wait" :initial="false">
+      <motion.div
+        v-if="!!helperText"
+        class="overflow-hidden"
+        :initial="{ height: 0 }"
+        :animate="{ height: 'auto' }"
+        :exit="{ height: 0 }"
+        :transition="{ duration: 0.1, ease: 'easeInOut' }"
+      >
+        <animate-presence mode="wait" :initial="false">
+          <motion.p
+            :key="status + helperText"
+            :class="helperStyles({ status })"
+            :initial="{ opacity: 0, y: -4 }"
+            :animate="{ opacity: 1, y: 0 }"
+            :exit="{ opacity: 0, y: 4 }"
+            :transition="{ duration: 0.12, ease: 'easeInOut', delay: 0.1 }"
+          >
+            {{ helperText }}
+          </motion.p>
+        </animate-presence>
+      </motion.div>
+    </animate-presence>
 
     <teleport to="body">
       <animate-presence>
