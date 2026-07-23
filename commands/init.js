@@ -70,7 +70,7 @@ export default async function init(options = {}) {
       ]);
 
       if (!overwrite) {
-        console.log(chalk.gray(`→ Skipped ${relPath}`));
+        console.log(chalk.gray(`→ Skipped ${destRel}`));
         continue;
       }
     }
@@ -98,7 +98,7 @@ export default async function init(options = {}) {
       ]);
 
       if (!overwrite) {
-        console.log(chalk.gray(`→ Skipped ${relPath}`));
+        console.log(chalk.gray(`→ Skipped ${destRel}`));
         continue;
       }
 
