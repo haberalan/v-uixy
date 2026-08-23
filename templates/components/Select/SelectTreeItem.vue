@@ -6,6 +6,7 @@
         itemStyles({
           selected: isSelected(option),
           disabled: !!option.disabled,
+          size: props.size ?? 'md',
         })
       "
       :style="{
@@ -69,6 +70,7 @@
           :multiple="multiple"
           :search-term="searchTerm"
           :original-options="originalOptions"
+          :size="size"
           @toggle-expand="$emit('toggle-expand', $event)"
           @select="$emit('select', $event)"
         />
@@ -81,6 +83,7 @@
   import { motion, AnimatePresence } from "motion-v";
   import { itemStyles } from "./Select.styles";
   import type { UixySelectOptionType } from "./Select.types";
+  import type { UixyFieldSize } from "~/types/field";
   import { UixyIcon } from "../Icon";
 
   const props = defineProps<{
@@ -93,6 +96,7 @@
     multiple?: boolean;
     searchTerm?: string;
     originalOptions?: UixySelectOptionType[];
+    size?: UixyFieldSize;
   }>();
 
   const emit = defineEmits<{

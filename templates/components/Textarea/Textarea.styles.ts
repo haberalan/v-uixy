@@ -1,7 +1,7 @@
 import styles from "~/utils/styles";
 
 export const textareaStyles = styles(
-  "peer transition-colors ease-in-out duration-150 border border-gray-300 dark:border-gray-900 rounded-1 px-3 py-2 text-sm placeholder:text-gray-500 dark:placeholder:text-gray-700 dark:outline-gray-800 outline-offset-1 outline-gray-300 scrollbar",
+  "peer transition-colors ease-in-out duration-150 border border-gray-300 dark:border-gray-900 rounded-1 placeholder:text-gray-500 dark:placeholder:text-gray-700 dark:outline-gray-800 outline-offset-1 outline-gray-300 scrollbar",
   {
     status: {
       default:
@@ -12,6 +12,11 @@ export const textareaStyles = styles(
         "bg-gray-200 text-gray-400 dark:bg-gray-900 dark:text-gray-700 resize-none",
       valid:
         "bg-white dark:bg-gray-1000 focus-visible:border-gray-500 dark:focus-visible:border-gray-600",
+    },
+    size: {
+      sm: "px-2.5 py-1.5 text-xs",
+      md: "px-3 py-2 text-sm",
+      xl: "px-3.5 py-2.5 text-base",
     },
     noResize: {
       true: "resize-none",

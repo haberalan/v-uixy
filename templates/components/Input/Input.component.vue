@@ -8,7 +8,7 @@
         :id
         :disabled="props.disabled"
         :placeholder="props.placeholder"
-        :class="inputStyles({ status, icon }, $attrs.class as string)"
+        :class="inputStyles({ status, icon, size }, $attrs.class as string)"
         v-bind="filteredAttrs"
       />
       <uixy-icon
@@ -19,6 +19,7 @@
           iconStyles({
             status,
             icon,
+            size,
             targetable: !!hasIconClickEmit,
           })
         "
@@ -93,6 +94,8 @@
   const status = computed(() =>
     props.disabled ? "disabled" : (props.status ?? "default"),
   );
+
+  const size = computed(() => props.size ?? "md");
 
   const text = computed(
     () =>

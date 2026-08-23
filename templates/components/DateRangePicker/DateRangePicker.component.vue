@@ -9,14 +9,14 @@
       role="button"
       :tabindex="props.disabled ? -1 : 0"
       :aria-expanded="active"
-      :class="triggerStyles({ status, open: active })"
+      :class="triggerStyles({ status, open: active, size })"
       @click="onTriggerClick"
       @keydown.enter.prevent="onTriggerClick"
       @keydown.space.prevent="onTriggerClick"
     >
       <uixy-icon
         :name="props.icon ?? 'calendar'"
-        :class="triggerIconStyles({ disabled: props.disabled })"
+        :class="triggerIconStyles({ disabled: props.disabled, size })"
       />
       <span
         :class="
@@ -31,7 +31,7 @@
       <uixy-icon
         v-if="hasValue && !props.disabled"
         name="close"
-        class="h-4 w-4 shrink-0 cursor-pointer text-gray-400 hover:text-black dark:text-gray-600 dark:hover:text-white"
+        :class="closeIconStyles({ size })"
         @click.stop="clear"
       />
     </div>
@@ -145,6 +145,7 @@
     triggerStyles,
     triggerValueStyles,
     triggerIconStyles,
+    closeIconStyles,
     labelStyles,
     helperStyles,
     panelStyles,
@@ -186,6 +187,8 @@
 
     return props.status ?? "default";
   });
+
+  const size = computed(() => props.size ?? "md");
 
   const helperText = computed(() => {
     if (status.value === "error") return props.errorText ?? "";

@@ -1,4 +1,5 @@
 import type { IconName } from "~/types/icons";
+import type { UixyFieldSize } from "~/types/field";
 
 export interface UixyDatePickerProps {
   placeholder?: string;
@@ -14,4 +15,5 @@ export interface UixyDatePickerProps {
   isDateDisabled?: (date: Date) => boolean;
   direction?: "top" | "bottom";
   closeOnSelect?: boolean;
+  size?: UixyFieldSize;
 }

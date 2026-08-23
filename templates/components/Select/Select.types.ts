@@ -1,3 +1,5 @@
+import type { UixyFieldSize } from "~/types/field";
+
 export interface UixySelectOptionType {
   label: string;
   value?: string;
@@ -38,4 +40,5 @@ export type UixySelectProps = {
   allowCustom?: boolean;
   clearSearchOnSelect?: boolean;
   followOnScroll?: boolean;
+  size?: UixyFieldSize;
 } & (UixyMultipleSelectProps | UixySingleSelectProps);

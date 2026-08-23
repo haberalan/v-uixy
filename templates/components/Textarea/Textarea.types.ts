@@ -1,3 +1,5 @@
+import type { UixyFieldSize } from "~/types/field";
+
 export interface UixyTextareaProps {
   status?: "valid" | "error" | "default";
   label?: string;
@@ -10,4 +12,5 @@ export interface UixyTextareaProps {
   noResize?: boolean;
   rows?: number;
   maxLength?: number;
+  size?: UixyFieldSize;
 }

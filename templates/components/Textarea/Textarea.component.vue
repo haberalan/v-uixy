@@ -11,7 +11,7 @@
         :max-length="props.maxLength"
         :class="
           textareaStyles(
-            { status, noResize: !!props.noResize },
+            { status, noResize: !!props.noResize, size },
             $attrs.class as string,
           )
         "
@@ -73,6 +73,8 @@
   const status = computed(() =>
     props.disabled ? "disabled" : (props.status ?? "default"),
   );
+
+  const size = computed(() => props.size ?? "md");
 
   const text = computed(
     () =>

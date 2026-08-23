@@ -1,4 +1,5 @@
 import type { IconName } from "~/types/icons";
+import type { UixyFieldSize } from "~/types/field";
 
 export interface UixyInputProps {
   status?: "valid" | "error" | "default";
@@ -11,6 +12,7 @@ export interface UixyInputProps {
   helperText?: string;
   errorText?: string;
   autoFocus?: boolean;
+  size?: UixyFieldSize;
 }
 
 export interface UixyInputEmits {

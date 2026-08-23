@@ -1,4 +1,5 @@
 import type { IconName } from "~/types/icons";
+import type { UixyFieldSize } from "~/types/field";
 
 export interface UixyDateRange {
   start: Date | null;
@@ -19,4 +20,5 @@ export interface UixyDateRangePickerProps {
   isDateDisabled?: (date: Date) => boolean;
   direction?: "top" | "bottom";
   closeOnSelect?: boolean;
+  size?: UixyFieldSize;
 }

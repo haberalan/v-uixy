@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-1">
     <div class="relative flex flex-col-reverse gap-1" ref="refOptions">
       <div
-        :class="selectStyles({ status }, $attrs.class as string)"
+        :class="selectStyles({ status, size }, $attrs.class as string)"
         :tabIndex="props.disabled ? -1 : 0"
         :auto-focus="props.autoFocus"
         ref="refTrigger"
@@ -37,17 +37,17 @@
         <uixy-icon
           v-if="props.deselectable && !props.multiple && model"
           name="close"
-          class="absolute right-7 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer z-10 text-gray-500 dark:text-gray-600 hover:text-black dark:hover:text-gray-400"
+          :class="deselectIconStyles({ size })"
           @click.stop="handleDeselect"
         />
-        <uixy-icon name="chevron-down" :class="iconStyles({ open })" />
+        <uixy-icon name="chevron-down" :class="iconStyles({ open, size })" />
       </div>
 
       <teleport to="body">
         <animate-presence>
           <motion.div
             v-if="open && !props.disabled"
-            class="scrollbar z-50 max-h-60 overflow-y-auto rounded-1 border border-gray-300 bg-white p-1 text-sm shadow-sm dark:border-gray-900 dark:bg-gray-1000"
+            :class="dropdownPanelStyles({ size })"
             :style="dropdownStyles"
             :initial="{ opacity: 0, y: -4, scale: 0.98 }"
             :animate="{ opacity: 1, y: 0, scale: 1 }"
@@ -63,6 +63,7 @@
                   icon="search"
                   iconPositon="right"
                   placeholder="Search..."
+                  :size="size"
                 />
               </div>
 
@@ -81,6 +82,7 @@
                     :multiple="props.multiple"
                     :search-term="search"
                     :original-options="props.options"
+                    :size="size"
                     @toggle-expand="toggleExpand"
                     @select="handleClick"
                   />
@@ -88,7 +90,12 @@
 
                 <li
                   v-if="filteredOptions.length === 0"
-                  class="px-3 text-center dark:text-gray-600"
+                  :class="
+                    listItemPaddingStyles(
+                      { size },
+                      'text-center dark:text-gray-600',
+                    )
+                  "
                 >
                   No results found
                 </li>
@@ -103,6 +110,7 @@
                     itemStyles({
                       selected: isSelected(option),
                       disabled: !!option.disabled,
+                      size,
                     })
                   "
                   @keydown="handleKeydownOption($event, option)"
@@ -112,13 +120,18 @@
                   <uixy-icon
                     v-if="isSelected(option)"
                     name="check"
-                    class="absolute right-2 top-2 size-4"
+                    :class="checkIconStyles({ size })"
                   />
                 </li>
 
                 <li
                   v-if="customAddVisible"
-                  class="relative py-2 px-3 rounded-1 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-500 dark:text-gray-600"
+                  :class="
+                    listItemPaddingStyles(
+                      { size },
+                      'relative rounded-1 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-500 dark:text-gray-600',
+                    )
+                  "
                   @click="handleCustomAdd"
                 >
                   Add: "{{ search }}"
@@ -126,7 +139,12 @@
 
                 <li
                   v-if="filteredOptions.length === 0 && !customAddVisible"
-                  class="px-3 text-center dark:text-gray-600"
+                  :class="
+                    listItemPaddingStyles(
+                      { size },
+                      'text-center dark:text-gray-600',
+                    )
+                  "
                 >
                   No results found
                 </li>
@@ -174,6 +192,10 @@
     itemStyles,
     helperStyles,
     badgesWrapperStyles,
+    deselectIconStyles,
+    dropdownPanelStyles,
+    listItemPaddingStyles,
+    checkIconStyles,
   } from "./Select.styles";
   import type { UixySelectEmits, UixySelectProps } from "./Select.types";
   import { UixyBadge } from "../Badge";
@@ -232,8 +254,12 @@
     handleCustomAdd,
   } = useSelect<T>(props, model as Ref<T>, emits, refDropdownEl);
 
+  let positionRequestId = 0;
+
   const updateDropdownPosition = async () => {
     if (!open.value || props.disabled) return;
+
+    const requestId = ++positionRequestId;
 
     await nextTick();
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
@@ -274,6 +300,8 @@
     const maxLeft = scrollX + window.innerWidth - width - pad;
     left = Math.min(Math.max(minLeft, left), Math.max(minLeft, maxLeft));
 
+    if (requestId !== positionRequestId) return;
+
     dropdownStyles.value = {
       position: "absolute",
       top: `${Math.round(top)}px`,
@@ -289,6 +317,13 @@
   const onAnyScroll = () => {
     void updateDropdownPosition();
   };
+
+  const dropdownResizeObserver =
+    typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(() => {
+          void updateDropdownPosition();
+        })
+      : null;
 
   watch(
     () => open.value,
@@ -308,12 +343,24 @@
         window.addEventListener("scroll", onAnyScroll, true);
       }
 
+      if (dropdownResizeObserver) {
+        nextTick(() => {
+          if (refDropdownEl.value)
+            dropdownResizeObserver.observe(refDropdownEl.value);
+        });
+      }
+
       onWatcherCleanup(() => {
         window.removeEventListener("resize", onResize);
         window.removeEventListener("scroll", onAnyScroll, true);
+        dropdownResizeObserver?.disconnect();
       });
     },
   );
+
+  onUnmounted(() => {
+    dropdownResizeObserver?.disconnect();
+  });
 
   onMounted(() => {
     if (props.autoOpen && !props.disabled) {
@@ -351,6 +398,8 @@
   const status = computed(() =>
     props.disabled ? "disabled" : (props.status ?? "default"),
   );
+
+  const size = computed(() => props.size ?? "md");
 
   const text = computed(
     () =>
