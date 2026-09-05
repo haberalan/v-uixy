@@ -14,6 +14,7 @@
       type="button"
       role="tab"
       :aria-selected="model === option.value"
+      :aria-label="option.ariaLabel"
       :disabled="props.disabled || option.disabled"
       :class="
         segmentStyles({

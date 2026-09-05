@@ -1,9 +1,11 @@
 import { ref, computed, watch, onBeforeUnmount, nextTick, type Ref } from "vue";
 
 type Direction = "top" | "bottom";
+type Align = "center" | "start";
 
 interface UsePositionOptions {
   direction?: Direction;
+  align?: Align;
 }
 
 const GAP = 6;
@@ -17,7 +19,10 @@ function hasFixedParent(el: HTMLElement | null): boolean {
   return false;
 }
 
-export function usePosition({ direction = "bottom" }: UsePositionOptions) {
+export function usePosition({
+  direction = "bottom",
+  align = "center",
+}: UsePositionOptions) {
   const refElement = ref<HTMLElement>();
 
   const active = ref(false);
@@ -26,7 +31,7 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
   const baseStyles = computed(() => ({
     position: hasFixedParent(target.value) ? "fixed" : "absolute",
     width: "max-content",
-    zIndex: 20,
+    zIndex: 70,
   }));
 
   const styles = ref<Record<string, string | number>>({
@@ -65,7 +70,10 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
         ? targetRect.top - tooltipRect.height - GAP + scrollY
         : targetRect.bottom + GAP + scrollY;
 
-    let left = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2;
+    let left =
+      align === "start"
+        ? targetRect.left
+        : targetRect.left + targetRect.width / 2 - tooltipRect.width / 2;
     const newStyles: Record<string, string | number> = {
       ...baseStyles.value,
       top,
@@ -87,13 +95,31 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
     };
   };
 
+  let resizeObserver: ResizeObserver | null = null;
+
+  const observeResize = () => {
+    if (typeof ResizeObserver === "undefined") return;
+    resizeObserver = new ResizeObserver(() => {
+      void updatePosition();
+    });
+    if (target.value) resizeObserver.observe(target.value);
+    if (refElement.value) resizeObserver.observe(refElement.value);
+  };
+
+  const unobserveResize = () => {
+    resizeObserver?.disconnect();
+    resizeObserver = null;
+  };
+
   watch(
-    [active, () => direction],
+    [active, () => direction, () => align],
     ([isActive]) => {
       if (isActive) {
         updatePosition();
+        observeResize();
         window.addEventListener("resize", updatePosition);
       } else {
+        unobserveResize();
         window.removeEventListener("resize", updatePosition);
       }
     },
@@ -101,6 +127,7 @@ export function usePosition({ direction = "bottom" }: UsePositionOptions) {
   );
 
   onBeforeUnmount(() => {
+    unobserveResize();
     window.removeEventListener("resize", updatePosition);
   });
 

@@ -13,10 +13,12 @@
           @click.self="handleClick"
         >
           <motion.div
+            class="flex w-full justify-center"
             :initial="{ scale: 0.8 }"
             :animate="{ scale: 1 }"
             :exit="{ scale: 0.8 }"
             :transition="{ duration: 0.15, ease: 'easeInOut' }"
+            @click.self="handleClick"
           >
             <slot />
           </motion.div>
@@ -40,7 +42,7 @@
   const open = defineModel<boolean>();
 
   const handleClick = () => {
-    if (props.persistent) return;
+    if (props.persistent || props.loading) return;
 
     open.value = false;
   };

@@ -39,6 +39,7 @@
 
   const { active, handleOpen, handleLeave, styles, refElement } = usePosition({
     direction: props.direction ?? "bottom",
+    align: props.align ?? "center",
   });
 
   const handleClickOutside = (e: MouseEvent) => {

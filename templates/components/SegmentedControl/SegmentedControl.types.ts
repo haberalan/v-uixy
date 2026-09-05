@@ -5,6 +5,7 @@ export interface UixySegmentedOption {
   value: string | number;
   icon?: IconName;
   disabled?: boolean;
+  ariaLabel?: string;
 }
 
 export interface UixySegmentedControlProps {
