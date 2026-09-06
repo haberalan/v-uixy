@@ -32,7 +32,7 @@ export const iconStyles = styles("h-5 w-5 shrink-0", {
   },
 });
 
-export const linkStyles = styles("rounded-1", {
+export const linkStyles = styles("", {
   disabled: {
     true: "pointer-events-none",
     false: "",

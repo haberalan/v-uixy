@@ -1,4 +1,5 @@
 import { ref, computed, watch, onBeforeUnmount, nextTick, type Ref } from "vue";
+import { useOverlayLayer } from "./useOverlayLayer";
 
 type Direction = "top" | "bottom";
 type Align = "center" | "start";
@@ -28,10 +29,12 @@ export function usePosition({
   const active = ref(false);
   const target = ref<HTMLElement | null>(null);
 
+  const { zIndex: layerZIndex, acquire, release } = useOverlayLayer();
+
   const baseStyles = computed(() => ({
     position: hasFixedParent(target.value) ? "fixed" : "absolute",
     width: "max-content",
-    zIndex: 70,
+    zIndex: layerZIndex.value,
   }));
 
   const styles = ref<Record<string, string | number>>({
@@ -115,10 +118,12 @@ export function usePosition({
     [active, () => direction, () => align],
     ([isActive]) => {
       if (isActive) {
+        acquire();
         updatePosition();
         observeResize();
         window.addEventListener("resize", updatePosition);
       } else {
+        release();
         unobserveResize();
         window.removeEventListener("resize", updatePosition);
       }
@@ -126,7 +131,12 @@ export function usePosition({
     { flush: "post" },
   );
 
+  watch(layerZIndex, (z) => {
+    styles.value = { ...styles.value, zIndex: z };
+  });
+
   onBeforeUnmount(() => {
+    release();
     unobserveResize();
     window.removeEventListener("resize", updatePosition);
   });

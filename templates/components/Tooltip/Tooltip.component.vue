@@ -10,6 +10,7 @@
       <animate-presence>
         <motion.div
           v-if="active"
+          data-uixy-overlay
           class="max-w-[100vw]"
           :initial="{ opacity: 0 }"
           :animate="{ opacity: 1 }"

@@ -47,8 +47,9 @@
         <animate-presence>
           <motion.div
             v-if="open && !props.disabled"
+            data-uixy-overlay
             :class="dropdownPanelStyles({ size })"
-            :style="dropdownStyles"
+            :style="[dropdownStyles, { zIndex: dropdownZIndex }]"
             :initial="{ opacity: 0, y: -4, scale: 0.98 }"
             :animate="{ opacity: 1, y: 0, scale: 1 }"
             :exit="{ opacity: 0, scale: 0.98 }"
@@ -203,6 +204,7 @@
   import { UixyInput } from "../Input";
   import { motion, AnimatePresence } from "motion-v";
   import { useSelect } from "./composables";
+  import { useOverlayLayer } from "~/composables";
   import SelectTreeItem from "./SelectTreeItem.vue";
 
   const props = defineProps<UixySelectProps>();
@@ -233,6 +235,12 @@
     left: "0px",
     width: "0px",
   });
+
+  const {
+    zIndex: dropdownZIndex,
+    acquire: acquireLayer,
+    release: releaseLayer,
+  } = useOverlayLayer();
 
   const {
     refOptions,
@@ -332,6 +340,8 @@
 
       if (!isOpen) return;
 
+      acquireLayer();
+
       void updateDropdownPosition();
 
       if (props.search) {
@@ -351,6 +361,7 @@
       }
 
       onWatcherCleanup(() => {
+        releaseLayer();
         window.removeEventListener("resize", onResize);
         window.removeEventListener("scroll", onAnyScroll, true);
         dropdownResizeObserver?.disconnect();
@@ -359,6 +370,7 @@
   );
 
   onUnmounted(() => {
+    releaseLayer();
     dropdownResizeObserver?.disconnect();
   });
 

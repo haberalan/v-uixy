@@ -76,13 +76,13 @@
       "name": "DatePicker",
       "related-components": ["Icon", "Button", "Calendar"],
       "packages": ["motion-v"],
-      "composables": ["usePosition"]
+      "composables": ["usePosition", "useOverlayLayer"]
     },
     {
       "name": "DateRangePicker",
       "related-components": ["Icon", "Button", "Calendar", "DatePicker"],
       "packages": ["motion-v"],
-      "composables": ["usePosition"]
+      "composables": ["usePosition", "useOverlayLayer"]
     },
     {
       "name": "FileUpload",
@@ -130,7 +130,7 @@
       "name": "Modal",
       "related-components": [],
       "packages": ["motion-v"],
-      "composables": []
+      "composables": ["useOverlayLayer"]
     },
     {
       "name": "PieChart",
@@ -142,7 +142,7 @@
       "name": "Popover",
       "related-components": [],
       "packages": ["motion-v", "uuid"],
-      "composables": ["usePosition"]
+      "composables": ["usePosition", "useOverlayLayer"]
     },
     {
       "name": "Radio",
@@ -166,7 +166,7 @@
       "name": "Select",
       "related-components": ["Badge", "Icon", "Input"],
       "packages": ["motion-v"],
-      "composables": ["useInputValidation"]
+      "composables": ["useInputValidation", "useOverlayLayer"]
     },
     {
       "name": "Separator",
@@ -178,7 +178,7 @@
       "name": "Sheet",
       "related-components": ["Scale"],
       "packages": ["motion-v"],
-      "composables": []
+      "composables": ["useOverlayLayer"]
     },
     {
       "name": "Skeleton",
@@ -250,7 +250,7 @@
       "name": "Tooltip",
       "related-components": [],
       "packages": ["motion-v"],
-      "composables": ["usePosition"]
+      "composables": ["usePosition", "useOverlayLayer"]
     }
   ]
 }

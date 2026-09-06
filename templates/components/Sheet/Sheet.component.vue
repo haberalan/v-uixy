@@ -8,8 +8,10 @@
             :animate="{ opacity: 1 }"
             :exit="{ opacity: 0 }"
             :transition="{ ease: 'easeInOut', duration: 0.15 }"
+            :style="{ zIndex }"
+            data-uixy-overlay
             @click.self="handleClick"
-            class="fixed left-0 top-0 z-20 size-full bg-white/5 backdrop-blur-[2px] dark:bg-gray-900/5"
+            class="fixed left-0 top-0 size-full bg-white/5 backdrop-blur-[2px] dark:bg-gray-900/5"
           />
           <motion.div
             initial="initial"
@@ -17,6 +19,8 @@
             exit="exit"
             :variants="ANIMATIONS[props.direction ?? 'right']"
             :transition="{ ease: 'easeInOut', duration: 0.3 }"
+            :style="{ zIndex }"
+            data-uixy-overlay
             :class="
             sheetStyles({ direction: props.direction ?? 'right' }, $attrs.class as string)
           "
@@ -33,6 +37,7 @@
 <script setup lang="ts">
   import { AnimatePresence, motion } from "motion-v";
   import { useScale } from "../Scale";
+  import { useOverlayLayer } from "~/composables";
   import type { UixySheetProps } from "./Sheet.types";
   import { sheetStyles } from "./Sheet.styles";
 
@@ -65,6 +70,8 @@
 
   const { setScale } = useScale();
 
+  const { zIndex, acquire, release } = useOverlayLayer();
+
   const open = defineModel<boolean>();
 
   const handleClick = () => {
@@ -74,13 +81,19 @@
   watch(
     () => open.value,
     (v) => {
-      if (v) return setScale(0.98);
+      if (v) {
+        acquire();
+        return setScale(0.98);
+      }
 
+      release();
       setScale(1);
     }
   );
 
   onUnmounted(async () => {
+    release();
+
     await nextTick();
 
     setScale(1);

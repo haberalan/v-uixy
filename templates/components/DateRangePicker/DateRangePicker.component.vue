@@ -64,6 +64,7 @@
       <animate-presence>
         <motion.div
           v-if="active"
+          data-uixy-overlay
           :initial="{ opacity: 0 }"
           :animate="{ opacity: 1 }"
           :exit="{ opacity: 0 }"

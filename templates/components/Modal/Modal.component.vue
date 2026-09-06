@@ -4,12 +4,15 @@
       <animate-presence>
         <motion.div
           v-if="open"
+          ref="rootRef"
           :initial="{ opacity: 0 }"
           :animate="{ opacity: 1 }"
           :exit="{ opacity: 0 }"
           :transition="{ duration: 0.15, ease: 'easeInOut' }"
           :class="modalStyles($attrs.class as string)"
-          data-modal
+          :style="{ zIndex }"
+          :[modalAttr]="''"
+          data-uixy-overlay
           @click.self="handleClick"
         >
           <motion.div
@@ -32,6 +35,7 @@
   import type { UixyModalProps } from "./Modal.types";
   import { modalStyles } from "./Modal.styles";
   import { AnimatePresence, motion } from "motion-v";
+  import { useModalLayer, MODAL_ATTR, getTopModalEl } from "~/composables";
 
   const props = defineProps<UixyModalProps>();
 
@@ -41,6 +45,17 @@
 
   const open = defineModel<boolean>();
 
+  const rootRef = ref<HTMLElement>();
+
+  const {
+    zIndex,
+    isTopModal,
+    open: openLayer,
+    close: closeLayer,
+  } = useModalLayer();
+
+  const modalAttr = computed(() => (open.value ? MODAL_ATTR : null));
+
   const handleClick = () => {
     if (props.persistent || props.loading) return;
 
@@ -48,6 +63,8 @@
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    if (!isTopModal.value) return;
+
     if (e.key === "Escape") {
       handleClick();
       return;
@@ -55,39 +72,21 @@
     if (e.key === "Enter") {
       const target = e.target as HTMLElement;
       if (target.tagName === "TEXTAREA" || target.tagName === "BUTTON") return;
-      const modalEl = document.querySelector("[data-modal]");
-      const form = modalEl?.querySelector("form");
+      const form =
+        rootRef.value?.querySelector("form") ??
+        getTopModalEl()?.querySelector("form");
       form?.requestSubmit();
     }
-  };
-
-  const toggleSiblingsInert = (enable?: boolean) => {
-    if (typeof document === "undefined") return;
-
-    const modalEl = document.querySelector(
-      "[data-modal]",
-    ) as HTMLElement | null;
-
-    Array.from(document.body.children).forEach((el) => {
-      if (modalEl && (el === modalEl || el.contains(modalEl))) return;
-
-      if (enable) {
-        el.setAttribute("inert", "");
-        el.setAttribute("aria-hidden", "true");
-      } else {
-        el.removeAttribute("inert");
-        el.removeAttribute("aria-hidden");
-      }
-    });
   };
 
   watch(
     open,
     (isOpen) => {
-      toggleSiblingsInert(isOpen);
       if (isOpen) {
+        openLayer();
         window.addEventListener("keydown", handleKeyDown);
       } else {
+        closeLayer();
         window.removeEventListener("keydown", handleKeyDown);
       }
     },
@@ -96,5 +95,6 @@
 
   onUnmounted(() => {
     window.removeEventListener("keydown", handleKeyDown);
+    closeLayer();
   });
 </script>

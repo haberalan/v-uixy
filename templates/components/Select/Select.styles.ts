@@ -88,7 +88,7 @@ export const listItemPaddingStyles = styles("", {
 });
 
 export const dropdownPanelStyles = styles(
-  "scrollbar z-50 max-h-60 overflow-y-auto rounded-1 border border-gray-300 bg-white p-1 shadow-sm dark:border-gray-900 dark:bg-gray-1000",
+  "scrollbar max-h-60 overflow-y-auto rounded-1 border border-gray-300 bg-white p-1 shadow-sm dark:border-gray-900 dark:bg-gray-1000",
   {
     size: {
       sm: "text-xs",
