@@ -18,14 +18,16 @@ export const inputStyles = styles(
       xl: "px-3.5 py-2.5 text-base",
     },
     icon: {
-      left: "pl-8",
-      right: "pr-8",
+      left: "",
+      right: "",
       none: "",
     },
   },
   {
     "size.sm+icon.left": "pl-7",
     "size.sm+icon.right": "pr-7",
+    "size.md+icon.left": "pl-9",
+    "size.md+icon.right": "pr-9",
     "size.xl+icon.left": "pl-9",
     "size.xl+icon.right": "pr-9",
   },
