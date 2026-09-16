@@ -11,6 +11,7 @@ export interface UixyDatePickerProps {
   icon?: IconName;
   withTime?: boolean;
   withSeconds?: boolean;
+  defaultHour?: number;
   startOfWeek?: "Sunday" | "Monday";
   isDateDisabled?: (date: Date) => boolean;
   direction?: "top" | "bottom";

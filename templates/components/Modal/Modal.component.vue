@@ -12,6 +12,7 @@
           :class="modalStyles($attrs.class as string)"
           :style="{ zIndex }"
           :[modalAttr]="''"
+          :data-uixy-modal-id="id"
           data-uixy-overlay
           @click.self="handleClick"
         >
@@ -48,6 +49,7 @@
   const rootRef = ref<HTMLElement>();
 
   const {
+    id,
     zIndex,
     isTopModal,
     open: openLayer,

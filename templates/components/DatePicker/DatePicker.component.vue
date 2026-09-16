@@ -1,10 +1,25 @@
 <template>
-  <div class="flex w-full flex-col gap-1">
-    <label v-if="props.label" :class="labelStyles({ status })">
+  <div :class="['flex flex-col gap-1', $slots.trigger ? 'w-fit' : 'w-full']">
+    <label v-if="props.label && !$slots.trigger" :class="labelStyles({ status })">
       {{ props.label }}
     </label>
 
     <div
+      v-if="$slots.trigger"
+      ref="triggerRef"
+      class="inline-flex w-fit"
+      role="button"
+      :tabindex="props.disabled ? -1 : 0"
+      :aria-expanded="active"
+      @click="onTriggerClick"
+      @keydown.enter.prevent="onTriggerClick"
+      @keydown.space.prevent="onTriggerClick"
+    >
+      <slot name="trigger" :open="active" :value="model" />
+    </div>
+
+    <div
+      v-else
       ref="triggerRef"
       role="button"
       :tabindex="props.disabled ? -1 : 0"
@@ -150,7 +165,12 @@
 
   const triggerRef = ref<HTMLElement>();
 
-  const draftTime = ref<UixyTimeParts>(timePartsOf(model.value));
+  const seedTime = (): UixyTimeParts =>
+    model.value
+      ? timePartsOf(model.value)
+      : { hour: props.defaultHour ?? 0, minute: 0, second: 0 };
+
+  const draftTime = ref<UixyTimeParts>(seedTime());
 
   const status = computed(() => {
     if (props.disabled) return "disabled";
@@ -209,11 +229,11 @@
   const clear = () => {
     model.value = null;
 
-    draftTime.value = { hour: 0, minute: 0, second: 0 };
+    draftTime.value = { hour: props.defaultHour ?? 0, minute: 0, second: 0 };
   };
 
   watch(active, (isActive) => {
-    if (isActive) draftTime.value = timePartsOf(model.value);
+    if (isActive) draftTime.value = seedTime();
   });
 
   const onDocClick = (event: MouseEvent) => {

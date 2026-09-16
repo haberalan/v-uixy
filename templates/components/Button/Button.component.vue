@@ -29,7 +29,7 @@
         :transition="{ ease: 'easeInOut', duration: 0.15 }"
       >
         <uixy-icon
-          v-if="props.icon && !props.loading"
+          v-if="props.icon"
           :name="props.icon"
           :class="iconStyles({ position: props.iconPosition ?? 'left' })"
         />
@@ -67,7 +67,7 @@
         :transition="{ ease: 'easeInOut', duration: 0.15 }"
       >
         <uixy-icon
-          v-if="props.icon && !props.loading"
+          v-if="props.icon"
           :name="props.icon"
           :class="iconStyles({ position: props.iconPosition ?? 'left' })"
         />

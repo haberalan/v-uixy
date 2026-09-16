@@ -47,6 +47,7 @@ export function useOverlayLayer(): UseOverlayLayerReturn {
 const MANAGED_ATTR = "data-uixy-inert-managed";
 const OVERLAY_ATTR = "data-uixy-overlay";
 export const MODAL_ATTR = "data-uixy-modal";
+export const MODAL_ID_ATTR = "data-uixy-modal-id";
 
 const modalStack = ref<number[]>([]);
 
@@ -60,7 +61,11 @@ export const getTopModalEl = (): HTMLElement | null => {
   if (typeof document === "undefined") return null;
   const els = Array.from(
     document.querySelectorAll<HTMLElement>(`[${MODAL_ATTR}]`),
-  );
+  ).filter((el) => {
+    const raw = el.getAttribute(MODAL_ID_ATTR);
+    if (raw === null) return true;
+    return modalStack.value.includes(Number(raw));
+  });
   if (els.length === 0) return null;
   return els.reduce((a, b) => (zOf(b) >= zOf(a) ? b : a));
 };
@@ -92,6 +97,7 @@ function reconcileInert() {
 }
 
 export interface UseModalLayerReturn {
+  id: number;
   zIndex: ComputedRef<number>;
   isTopModal: ComputedRef<boolean>;
   open: () => void;
@@ -115,10 +121,11 @@ export function useModalLayer(): UseModalLayerReturn {
   const close = () => {
     layer.release();
     modalStack.value = modalStack.value.filter((x) => x !== layer.id);
+    reconcileInert();
     nextTick(reconcileInert);
   };
 
   onScopeDispose(close);
 
-  return { zIndex: layer.zIndex, isTopModal, open, close };
+  return { id: layer.id, zIndex: layer.zIndex, isTopModal, open, close };
 }
