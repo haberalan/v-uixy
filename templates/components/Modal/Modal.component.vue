@@ -36,7 +36,12 @@
   import type { UixyModalProps } from "./Modal.types";
   import { modalStyles } from "./Modal.styles";
   import { AnimatePresence, motion } from "motion-v";
-  import { useModalLayer, MODAL_ATTR, getTopModalEl } from "~/composables";
+  import {
+    useModalLayer,
+    useGpuAcceleration,
+    MODAL_ATTR,
+    getTopModalEl,
+  } from "~/composables";
 
   const props = defineProps<UixyModalProps>();
 
@@ -55,6 +60,8 @@
     open: openLayer,
     close: closeLayer,
   } = useModalLayer();
+
+  useGpuAcceleration();
 
   const modalAttr = computed(() => (open.value ? MODAL_ATTR : null));
 
