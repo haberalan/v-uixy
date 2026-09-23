@@ -11,7 +11,7 @@
             :style="{ zIndex }"
             data-uixy-overlay
             @click.self="handleClick"
-            class="fixed left-0 top-0 size-full bg-white/5 backdrop-blur-[2px] dark:bg-gray-900/5"
+            class="fixed left-0 top-0 size-full bg-white/5 [html[data-uixy-gpu=on]_&]:backdrop-blur-[2px] dark:bg-gray-900/5"
           />
           <motion.div
             initial="initial"
@@ -37,7 +37,7 @@
 <script setup lang="ts">
   import { AnimatePresence, motion } from "motion-v";
   import { useScale } from "../Scale";
-  import { useOverlayLayer } from "~/composables";
+  import { useOverlayLayer, useGpuAcceleration } from "~/composables";
   import type { UixySheetProps } from "./Sheet.types";
   import { sheetStyles } from "./Sheet.styles";
 
@@ -71,6 +71,8 @@
   const { setScale } = useScale();
 
   const { zIndex, acquire, release } = useOverlayLayer();
+
+  useGpuAcceleration();
 
   const open = defineModel<boolean>();
 
