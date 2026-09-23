@@ -130,12 +130,12 @@
       "name": "Modal",
       "related-components": [],
       "packages": ["motion-v"],
-      "composables": ["useOverlayLayer"]
+      "composables": ["useOverlayLayer", "useGpuAcceleration"]
     },
     {
       "name": "PieChart",
       "related-components": [],
-      "packages": ["motion-v"],
+      "packages": [],
       "composables": []
     },
     {
@@ -178,7 +178,7 @@
       "name": "Sheet",
       "related-components": ["Scale"],
       "packages": ["motion-v"],
-      "composables": ["useOverlayLayer"]
+      "composables": ["useOverlayLayer", "useGpuAcceleration"]
     },
     {
       "name": "Skeleton",
@@ -213,7 +213,7 @@
     {
       "name": "Tabs",
       "related-components": [],
-      "packages": ["motion-v"],
+      "packages": ["motion-v", "uuid"],
       "composables": []
     },
     {
